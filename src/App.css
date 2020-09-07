@@ -39,3 +39,24 @@
     transform: rotate(360deg);
   }
 }
+
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mr-30 {
+  margin-right: 30px;
+}
+
+.w-150 {
+  width: 150px;
+  text-align: left;
+  display: inline-block;
+}
+
+.p-40 {
+  padding: 40px;
+}
