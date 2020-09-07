@@ -7,8 +7,11 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-// import MenuIcon from '@material-ui/icons/Menu';
-
+import HomePage from './Components/HomePage'
+import LoginPage from './Components/LoginPage'
+import {
+  Link
+} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
 
 function App() {
   const classes = useStyles();
-
+  const login = localStorage.getItem('login');
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -35,9 +38,11 @@ function App() {
           <Typography variant="h6" className={classes.title}>
             AirLine
           </Typography>
-          <Button color="inherit">Home</Button>
+          {login && <Link to="home">Home</Link>}
+
         </Toolbar>
       </AppBar>
+      {login ? <HomePage /> : <LoginPage />}
     </div>
   );
 }
