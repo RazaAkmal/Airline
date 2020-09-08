@@ -1,8 +1,15 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button, TextField, Container, Grid, Card } from '@material-ui/core';
 import '../App.css'
 
 export default function LoginPage() {
+
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+
+  function handleSubmit() {
+
+  }
   return (
     <Container>
       <Grid style={{ textAlign: "center" }}>
@@ -15,10 +22,9 @@ export default function LoginPage() {
 
             <div className="w-150">Email</div>
 
-            <TextField id="username"
+            <TextField
               required className="w-150" label="" onChange={(e) => {
-                this.props.LoginSetErrors("username", false);
-                this.setState({ username: e.target.value })
+                setUsername(e.target.value)
               }} />
 
           </div>
@@ -27,14 +33,17 @@ export default function LoginPage() {
 
           <div className="flex-center">
             <div className="w-150">Password</div>
-            <TextField type="password" id="password"
+            <TextField type="password"
               required className="w-150" label="" onChange={(e) => {
-                this.props.LoginSetErrors("password", false);
-
-                this.setState({ password: e.target.value })
+                setPassword(e.target.value)
               }} />
 
           </div>
+          <br />
+          <br />
+          <br />
+          <Button type="submit" onClick={handleSubmit} variant="outlined" color="primary" className="m-10">Sign In</Button>
+
         </Card>
       </Grid>
     </Container>
