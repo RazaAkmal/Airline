@@ -9,6 +9,7 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import HomePage from './Components/HomePage'
 import LoginPage from './Components/LoginPage'
+import { useSelector } from 'react-redux'
 import {
   Link
 } from "react-router-dom";
@@ -27,7 +28,8 @@ const useStyles = makeStyles((theme) => ({
 
 function App() {
   const classes = useStyles();
-  const login = localStorage.getItem('login');
+  const islogin = localStorage.getItem('login');
+  const login = useSelector(state => state.login)
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -38,11 +40,14 @@ function App() {
           <Typography variant="h6" className={classes.title}>
             AirLine
           </Typography>
-          {login && <Link to="home">Home</Link>}
+          {(login.isLoggedIn || islogin) && <Button color="inherit" onClick={() => {
+            localStorage.clear()
+            window.location.reload()
+          }}>Logout</Button>}
 
         </Toolbar>
       </AppBar>
-      {login ? <HomePage /> : <LoginPage />}
+      {(login.isLoggedIn || islogin) ? <HomePage /> : <LoginPage />}
     </div>
   );
 }

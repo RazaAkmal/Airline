@@ -1,9 +1,15 @@
 import React from 'react'
 import '../App.css'
-export default function HomePage() {
-  return (
-    <div>
-      Home Page
-    </div>
-  )
+
+
+class HomePage extends React.Component {
+  render() {
+    return (
+      <div>
+        Home Page
+      </div>
+    )
+  }
 }
+
+export default HomePage
