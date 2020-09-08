@@ -10,9 +10,6 @@ import IconButton from '@material-ui/core/IconButton';
 import HomePage from './Components/HomePage'
 import LoginPage from './Components/LoginPage'
 import { useSelector } from 'react-redux'
-import {
-  Link
-} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
