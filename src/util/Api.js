@@ -6,7 +6,7 @@ export default function globalAxios() {
     axios.create({
       baseURL: "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/",
       headers: {
-        "x-rapidapi-key": "8edf91f661msh238b40689a60f3cp16a6dcjsn88172d726a48"
+        "x-rapidapi-key": "1fd29b48cfmsha93fa973c10d834p1c553djsn3871a6c7862b"
       }
     })
   )
