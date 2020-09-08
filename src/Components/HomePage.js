@@ -1,13 +1,14 @@
 import React from 'react'
 import '../App.css'
+import { Button, TextField, Container, Grid, Card } from '@material-ui/core';
 
 
 class HomePage extends React.Component {
   render() {
     return (
-      <div>
+      <Container>
         Home Page
-      </div>
+      </Container>
     )
   }
 }
