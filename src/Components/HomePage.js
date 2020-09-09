@@ -35,10 +35,10 @@ class HomePage extends React.Component {
   }
 
   handleDestinationSelect = (e) => {
-    this.setState({ destination: e.target.value })
+    this.setState({ destination: e.target.value, destinationError: false })
   }
   handleOriginSelect = (e) => {
-    this.setState({ origin: e.target.value })
+    this.setState({ origin: e.target.value, originError: false })
   }
 
   handleRouteSubmit = (noDate) => {
