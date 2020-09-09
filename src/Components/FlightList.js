@@ -24,8 +24,8 @@ const useStyles = makeStyles({
   }
 });
 
-let check = 0
 export default function FlightList(props) {
+  let check = 0
   const classes = useStyles();
   return (
     <div>
@@ -70,7 +70,7 @@ export default function FlightList(props) {
         }
       })
       }
-      {check === 0 ? <small style={{ color: "red" }}> No Flight Found. Try Changing date or Location</small> : ''}
+      {check === 0 || isEmpty(props.flightList.Quotes) ? <small style={{ color: "red" }}> No Flight Found. Try Changing date or Location</small> : ''}
     </div>
   )
 }
