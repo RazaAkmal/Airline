@@ -10,6 +10,13 @@ import IconButton from '@material-ui/core/IconButton';
 import HomePage from './Components/HomePage'
 import LoginPage from './Components/LoginPage'
 import { useSelector } from 'react-redux'
+import {
+  Switch,
+  Route,
+  Link,
+  Redirect
+} from "react-router-dom";
+import InternationalPage from './Components/InternationalPage';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,6 +44,8 @@ function App() {
           <Typography variant="h6" className={classes.title}>
             AirLine
           </Typography>
+          <Link style={{ textDecoration: 'none', color: "white", marginRight: "30px" }} to="/international">International Flights</Link>
+          <Link style={{ textDecoration: 'none', color: "white", marginRight: "100px" }} to="/">Local Flights</Link>
           {(login.isLoggedIn || islogin) && <Button color="inherit" onClick={() => {
             localStorage.clear()
             window.location.reload()
@@ -44,7 +53,16 @@ function App() {
 
         </Toolbar>
       </AppBar>
-      {(login.isLoggedIn || islogin) ? <HomePage /> : <LoginPage />}
+      {(login.isLoggedIn || islogin) ?
+        <div>
+          <Route path="/international">
+            <InternationalPage />
+          </Route>
+          <Route exact path="/">
+            <HomePage />
+          </Route>
+        </div>
+        : <LoginPage />}
     </div>
   );
 }

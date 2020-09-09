@@ -2,9 +2,21 @@ import globalAxios from "../util/Api"
 import Axios from 'axios'
 import moment from 'moment'
 
-import { FETCH_PLACES, FETCH_FLIGHTS, START_LOADING, STOP_LOADING, PLACE_ERROR } from "../constants"
+import { FETCH_PLACES, FETCH_FLIGHTS, START_LOADING, STOP_LOADING, FETCH_COUNTIRES, PLACE_ERROR } from "../constants"
 
 
+export const fetchCountires = () => {
+  return (dispatch) => {
+    dispatch({ type: START_LOADING })
+    globalAxios().get(`apiservices/reference/v1.0/countries/en-US`
+    ).then(res => {
+      dispatch({ type: FETCH_COUNTIRES, payload: res.data.Countries })
+
+    }).catch(error => {
+      // dispatch({ type: PLACE_ERROR })
+    })
+  }
+}
 export const fetchPlaces = (country) => {
   return (dispatch) => {
     dispatch({ type: START_LOADING })

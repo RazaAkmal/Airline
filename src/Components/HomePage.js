@@ -2,7 +2,7 @@ import React from 'react'
 import '../App.css'
 import { Button, TextField, Container, Grid, Card } from '@material-ui/core';
 import { connect } from 'react-redux'
-import { fetchPlaces, fetchFlights } from '../actions';
+import { fetchPlaces, fetchFlights, fetchCountires } from '../actions';
 import Countries from './common/countries.json'
 import NativeSelect from '@material-ui/core/NativeSelect';
 // import option from '@material-ui/core/option';
@@ -26,7 +26,7 @@ class HomePage extends React.Component {
   }
 
   componentDidMount = () => {
-    // this.props.fetchPlaces("United State")
+    this.props.fetchCountires()
   }
 
   handleCountrySelect = (e) => {
@@ -67,7 +67,7 @@ class HomePage extends React.Component {
 
 
   render() {
-    const { places_data, isLoading, flightList, error, place_error } = this.props
+    const { places_data, isLoading, flightList, error, place_error, countries_data } = this.props
     const { origin, destination, date, withoutDate, originError, destinationError } = this.state
     return (
       <Container>
@@ -87,7 +87,7 @@ class HomePage extends React.Component {
               label="Age"
             >
               <option aria-label="None" value="" />
-              {Countries.map((data, index) => <option key={index} value={data.name}>{data.name}</option>)}
+              {countries_data && countries_data.map((data, index) => <option key={index} value={data.Name}>{data.Name}</option>)}
             </NativeSelect>
           </FormControl>
           <div className="h-50">
@@ -172,7 +172,7 @@ class HomePage extends React.Component {
           <div className="h-50">
             {
               error &&
-              <small style={{ color: "red" }}> No Flight Found</small>
+              <small style={{ color: "red" }}> No Flight Found. Try Changing date or Location</small>
             }
           </div>
         </Grid>
@@ -190,6 +190,7 @@ const mapStateToProps = ({ flight }) => {
     flightList: flight.flight_list,
     error: flight.error,
     place_error: flight.place_error,
+    countries_data: flight.countries_data,
   }
 }
 
@@ -197,6 +198,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     fetchPlaces: (country) => dispatch(fetchPlaces(country)),
     fetchFlights: (data) => dispatch(fetchFlights(data)),
+    fetchCountires: () => dispatch(fetchCountires()),
   }
 }
 
