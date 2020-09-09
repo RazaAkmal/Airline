@@ -1,4 +1,4 @@
-import { LOGIN_USER, START_LOADING, WRONG_CREDENTIAL } from "../constants"
+import { LOGIN_USER, START_LOGIN_LOADING, WRONG_CREDENTIAL } from "../constants"
 
 const INITIAL_STATE = {
   loading: false,
@@ -7,7 +7,7 @@ const INITIAL_STATE = {
 }
 export default function (state = INITIAL_STATE, action) {
   switch (action.type) {
-    case START_LOADING:
+    case START_LOGIN_LOADING:
       return {
         ...state,
         loading: true

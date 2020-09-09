@@ -60,3 +60,11 @@
 .p-40 {
   padding: 40px;
 }
+
+.errorSpan span {
+  color: #f44336;
+  font-size:12px;
+  font-weight:400;
+  line-height:19.92px;
+  letter-spacing:0.39996px;
+}
