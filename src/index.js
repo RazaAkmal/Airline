@@ -18,9 +18,7 @@ const store = createStore(reducers, composeWithDevTools(applyMiddleware(ReduxThu
 ReactDOM.render(
   <Provider store={store}>
     <Router>
-      <React.StrictMode>
-        <App />
-      </React.StrictMode>
+      <App />
     </Router>
   </Provider>,
   document.getElementById('root')

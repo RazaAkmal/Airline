@@ -1,69 +1,63 @@
 import React from 'react';
-import logo from './logo.svg';
+import logo from './logo.png';
 import './App.css';
-import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
 import HomePage from './Components/HomePage'
 import LoginPage from './Components/LoginPage'
 import { useSelector } from 'react-redux'
+import 'antd/dist/antd.css';
 import {
-  Switch,
   Route,
   Link,
-  Redirect
 } from "react-router-dom";
 import InternationalPage from './Components/InternationalPage';
+import { Layout, Menu, Button } from 'antd';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    flexGrow: 1,
-  },
-}));
 
 function App() {
-  const classes = useStyles();
   const islogin = localStorage.getItem('login');
   const login = useSelector(state => state.login)
+  const { Header, Content, Sider } = Layout;
+  const path = window.location.pathname
   return (
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-            <img src={logo} className="App-logo" alt="logo" />
-          </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            AirLine
-          </Typography>
-          <Link style={{ textDecoration: 'none', color: "white", marginRight: "30px" }} to="/international">International Flights</Link>
-          <Link style={{ textDecoration: 'none', color: "white", marginRight: "100px" }} to="/">Local Flights</Link>
-          {(login.isLoggedIn || islogin) && <Button color="inherit" onClick={() => {
-            localStorage.clear()
-            window.location.reload()
-          }}>Logout</Button>}
-
-        </Toolbar>
-      </AppBar>
-      {(login.isLoggedIn || islogin) ?
-        <div>
-          <Route path="/international">
-            <InternationalPage />
-          </Route>
-          <Route exact path="/">
-            <HomePage />
-          </Route>
+    <Layout>
+      <Header className="header" style={{ position: 'fixed', zIndex: 1, width: '100%', }}>
+        <div className="logo" >
+          <h2>AirLine</h2>
         </div>
-        : <LoginPage />}
-    </div>
+        {(login.isLoggedIn || islogin) &&
+          <Menu theme="dark" style={{ height: "64px" }} mode="horizontal" defaultSelectedKeys={path === "/international" ? ['2'] : ['1']}>
+
+            <Menu.Item key="1"><Link to="/">Local Flights</Link></Menu.Item>
+            <Menu.Item key="2"><Link to="/international">International Flights</Link></Menu.Item>
+
+          </Menu>
+
+        }
+        <Button type="link" onClick={() => {
+          localStorage.clear()
+          window.location.reload()
+        }}>Logout</Button>
+      </Header>
+      <Content
+        className="site-layout-background"
+        style={{
+          padding: 24,
+          marginTop: 64,
+          minHeight: 380,
+        }}
+      >
+        {(login.isLoggedIn || islogin) ?
+          <div>
+            <Route path="/international">
+              <InternationalPage />
+            </Route>
+            <Route exact path="/">
+              <HomePage />
+            </Route>
+          </div>
+          : <LoginPage />}
+      </Content>
+    </Layout>
   );
 }
 

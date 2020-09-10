@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import { fetchPlaces, fetchFlights, fetchCountires } from '../actions';
 import Countries from './common/countries.json'
 import NativeSelect from '@material-ui/core/NativeSelect';
-// import option from '@material-ui/core/option';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import OverLoader from './common/loader';
@@ -23,10 +22,6 @@ class HomePage extends React.Component {
     withoutDate: false,
     originError: false,
     destinationError: false
-  }
-
-  componentDidMount = () => {
-    this.props.fetchCountires()
   }
 
   handleCountrySelect = (e) => {
@@ -87,7 +82,7 @@ class HomePage extends React.Component {
               label="Age"
             >
               <option aria-label="None" value="" />
-              {countries_data && countries_data.map((data, index) => <option key={index} value={data.Name}>{data.Name}</option>)}
+              {Countries && Countries.map((data, index) => <option key={index} value={data.name}>{data.name}</option>)}
             </NativeSelect>
           </FormControl>
           <div className="h-50">
