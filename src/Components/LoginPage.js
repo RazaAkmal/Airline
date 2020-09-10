@@ -54,7 +54,7 @@ class LoginPage extends React.Component {
     const { isLoading, credential_error } = this.props
 
     return (
-      <div className="site-card-border-less-wrapper">
+      <div className="site-card-border-less-wrapper flex-center">
         {isLoading && <OverLoader />}
         <Card title="Welcome To Airline" style={{ width: 900 }}>
           <Form
