@@ -152,7 +152,7 @@ class HomePage extends React.Component {
                 <Select
                   size="large"
                   showSearch
-                  style={{ width: "400px" }}
+                  style={{ width: "300px" }}
                   placeholder="Select the Country"
                   optionFilterProp="children"
                   onChange={this.handleCountrySelect}
@@ -169,14 +169,14 @@ class HomePage extends React.Component {
           {
             places_data &&
             <Row justify="center">
-              <Col span={6} style={{ marginLeft: "-135px" }}>
+              <Col span={6} style={{ marginLeft: "-100px" }}>
                 <Form.Item label="Origin" labelCol={{ span: 24 }}
                   help={originError && "Please Select Origin"}
                   validateStatus={originError && "error"}>
                   <Select
                     size="large"
                     showSearch
-                    style={{ width: "400px" }}
+                    style={{ width: "300px" }}
                     value={origin}
                     placeholder="Select Origin Place"
                     optionFilterProp="children"
@@ -199,7 +199,7 @@ class HomePage extends React.Component {
                   <Select
                     size="large"
                     showSearch
-                    style={{ width: "400px" }}
+                    style={{ width: "300px" }}
                     value={destination}
                     placeholder="Select Destination Place"
                     optionFilterProp="children"
