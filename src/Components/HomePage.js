@@ -169,7 +169,7 @@ class HomePage extends React.Component {
           {
             places_data &&
             <Row justify="center">
-              <Col span={6} style={{ marginLeft: "-100px" }}>
+              <Col span={6} >
                 <Form.Item label="Origin" labelCol={{ span: 24 }}
                   help={originError && "Please Select Origin"}
                   validateStatus={originError && "error"}>
@@ -213,7 +213,7 @@ class HomePage extends React.Component {
                   </Select>
                 </Form.Item>
               </Col>
-              <Col span={4}>
+              <Col span={6}>
                 <Form.Item labelCol={{ span: 24 }} label="Departure Date">
                   <DatePicker size="large"
                     style={{ width: "300px" }}
