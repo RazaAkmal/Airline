@@ -1,15 +1,26 @@
 import React from 'react'
 import '../App.css'
-import { Button, TextField, Container, Grid, Card } from '@material-ui/core';
 import { connect } from 'react-redux'
-import { fetchPlaces, fetchFlights, fetchCountires } from '../actions';
+import { fetchPlaces, fetchFlights, fetchCountires, resetState } from '../actions';
 import Countries from './common/countries.json'
-import NativeSelect from '@material-ui/core/NativeSelect';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
 import OverLoader from './common/loader';
 import FlightList from './FlightList';
 import moment from 'moment'
+import { Row, Form, Col, Select, Typography, Button, Space, DatePicker } from 'antd';
+import isEmpty from 'lodash.isempty';
+
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 5 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 12 },
+  },
+};
+
+const dateFormat = 'YYYY-MM-DD';
 
 
 class HomePage extends React.Component {
@@ -21,19 +32,76 @@ class HomePage extends React.Component {
     date: moment(Date()).format('YYYY-MM-DD'),
     withoutDate: false,
     originError: false,
-    destinationError: false
+    destinationError: false,
+    flightsData: [],
+    datacheck: 0
   }
 
-  handleCountrySelect = (e) => {
-    this.setState({ country: e.target.value, origin: '', destination: '' })
-    this.props.fetchPlaces(e.target.value)
+  componentDidMount = () => {
+    this.props.resetState()
   }
 
-  handleDestinationSelect = (e) => {
-    this.setState({ destination: e.target.value, destinationError: false })
+
+  UNSAFE_componentWillReceiveProps = (nextProps) => {
+    const { flightList } = this.props
+    const { date, withoutDate } = this.state
+    let datasource = []
+    let check = 0
+    if (nextProps.flightList !== flightList) {
+      if (nextProps.flightList)
+        if (!isEmpty(nextProps.flightList.Quotes)) {
+          nextProps.flightList.Quotes.map((quote, index) => {
+            if (moment(quote.OutboundLeg.DepartureDate).format("YYYY-MM-DD") === date || withoutDate === true) {
+              check++
+              let fromData = nextProps.flightList.Places && nextProps.flightList.Places.map(places => {
+                if (places.PlaceId === quote.OutboundLeg.OriginId) {
+                  return places.Name
+                }
+                return false
+              })
+
+              let toData = nextProps.flightList.Places && nextProps.flightList.Places.map(places => {
+                if (places.PlaceId === quote.OutboundLeg.DestinationId)
+                  return places.Name
+                return false
+              })
+
+              let carrierData = nextProps.flightList.Carriers && nextProps.flightList.Carriers.map(carrier => {
+                return quote.OutboundLeg.CarrierIds.map(id => {
+                  if (carrier.CarrierId === id)
+                    return carrier.Name
+                })
+                return false
+              })
+
+              datasource.push({
+                key: index,
+                date: moment(quote.OutboundLeg.DepartureDate).format("YYYY-MM-DD"),
+                from: !isEmpty(fromData) && fromData.filter(Boolean),
+                to: !isEmpty(toData) && toData.filter(Boolean),
+                direct: quote.Direct ? "Yes" : "No",
+                carriers: !isEmpty(carrierData) && carrierData.filter(Boolean),
+                price: `$${quote.MinPrice}`
+              })
+            }
+          })
+          this.setState({ flightsData: datasource, datacheck: check })
+        }
+    }
   }
-  handleOriginSelect = (e) => {
-    this.setState({ origin: e.target.value, originError: false })
+
+
+
+  handleCountrySelect = (val) => {
+    this.setState({ country: val, origin: '', destination: '', originError: false, destinationError: false })
+    this.props.fetchPlaces(val)
+  }
+
+  handleDestinationSelect = (val) => {
+    this.setState({ destination: val, destinationError: false })
+  }
+  handleOriginSelect = (val) => {
+    this.setState({ origin: val, originError: false })
   }
 
   handleRouteSubmit = (noDate) => {
@@ -55,123 +123,132 @@ class HomePage extends React.Component {
     }
   }
 
-  handleDateChange = e => {
-    this.setState({ date: e.target.value })
+  handleDateChange = val => {
+    this.setState({ date: val })
   }
 
+  disabledDate = (current) => {
+    return current && current < moment().endOf('day');
+  }
 
 
   render() {
     const { places_data, isLoading, flightList, error, place_error, countries_data } = this.props
-    const { origin, destination, date, withoutDate, originError, destinationError } = this.state
+    const { flightsData, datacheck, origin, destination, date, withoutDate, originError, destinationError } = this.state
+    const { Option } = Select;
+    const { Title } = Typography;
     return (
-      <Container>
+      <div style={{ marginTop: "20px" }}>
         {isLoading && <OverLoader />}
-        <Grid style={{ textAlign: "center" }}>
-          <h3>Welcome To AirLine </h3>
-          <br />
-          <br />
-          <FormControl variant="outlined" >
-            <InputLabel id="demo-simple-select-outlined-label">Select the Country</InputLabel>
-            <NativeSelect
-              labelid="demo-simple-select-outlined-label"
-              id="demo-simple-select-outlined"
-              style={{ minWidth: "300px" }}
-              error={place_error}
-              onChange={this.handleCountrySelect}
-              label="Age"
-            >
-              <option aria-label="None" value="" />
-              {Countries && Countries.map((data, index) => <option key={index} value={data.name}>{data.name}</option>)}
-            </NativeSelect>
-          </FormControl>
-          <div className="h-50">
-            {
-              place_error &&
-              <small style={{ color: "red" }}> No Places Found For This Country</small>
-            }
-          </div>
-          <br />
-          <br />
-          <br />
-          {places_data &&
-            <div>
-              <FormControl variant="outlined" >
-                <InputLabel id="demo-simple-select-outlined-label">Select Origin Place</InputLabel>
-                <NativeSelect
-                  labelid="demo-simple-select-outlined-label"
-                  id="demo-simple-select-outlined"
-                  style={{ minWidth: "300px" }}
-                  value={origin}
-                  error={originError}
-                  onChange={this.handleOriginSelect}
-                  label="Age"
+        <Row>
+          <Col span={12} offset={10}>
+            <h2>Welcome To Airline </h2>
+          </Col>
+        </Row>
+        <Form {...formItemLayout}>
+          <Row>
+            <Col span={12} offset={9}>
+              <Form.Item label="Country" labelCol={{ span: 24 }}>
+                <Select
+                  size="large"
+                  showSearch
+                  style={{ width: "400px" }}
+                  placeholder="Select the Country"
+                  optionFilterProp="children"
+                  onChange={this.handleCountrySelect}
+                  filterOption={(input, option) =>
+                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
                 >
-                  <option aria-label="None" value="" />
-                  {places_data.map((data, index) => <option key={index} value={data.PlaceId}>{data.PlaceName}</option>)}
-                </NativeSelect>
-                {originError &&
-                  <div className="errorSpan">
-                    <span>
-                      Please Select Origin
-                    </span>
-                  </div>
-                }
-              </FormControl>
-              <FormControl style={{ marginLeft: "15px" }}>
-                <InputLabel id="demo-simple-select-outlined-label">Select Destination Place</InputLabel>
-                <NativeSelect
-                  labelid="demo-simple-select-outlined-label"
-                  id="demo-simple-select-outlined"
-                  style={{ minWidth: "300px" }}
-                  error={destinationError}
-                  onChange={this.handleDestinationSelect}
-                  value={destination}
-                  label="Age"
-                >
-                  <option aria-label="None" value="" />
-                  {places_data.map((data, index) => <option key={index} value={data.PlaceId}>{data.PlaceName}</option>)}
-                </NativeSelect>
-                {destinationError &&
-                  <div className="errorSpan">
-                    <span>
-                      Please Select Destination
-                    </span>
-                  </div>
-                }
-              </FormControl>
-              <br />
-              <TextField
-                style={{
-                  width: "300px",
-                  marginTop: "20px"
-                }}
-                label="Departure Date"
-                type="date"
-                onChange={this.handleDateChange}
-                defaultValue={date}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-              <br />
-              <br />
-              <Button type="submit" onClick={() => this.handleRouteSubmit(false)} variant="outlined" color="primary" className="m-10">Browse Flights</Button>
-              <Button style={{ marginLeft: "10px" }} type="submit" onClick={() => this.handleRouteSubmit(true)} variant="outlined" color="primary" className="m-10">Browse Flights Without Date</Button>
-            </div>
+                  {Countries && Countries.map((data, index) => <Option key={index} value={data.name}>{data.name}</Option>)}
+
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+          {
+            places_data &&
+            <Row justify="center">
+              <Col span={6} style={{ marginLeft: "-135px" }}>
+                <Form.Item label="Origin" labelCol={{ span: 24 }}
+                  help={originError && "Please Select Origin"}
+                  validateStatus={originError && "error"}>
+                  <Select
+                    size="large"
+                    showSearch
+                    style={{ width: "400px" }}
+                    value={origin}
+                    placeholder="Select Origin Place"
+                    optionFilterProp="children"
+                    onChange={this.handleOriginSelect}
+                    onSearch={() => this.setState({ originError: false })}
+                    filterOption={(input, option) =>
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {places_data.map((data, index) => <Option key={index} value={data.PlaceId}>{data.PlaceName}</Option>)}
+
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={6}>
+                <Form.Item label="Destination"
+                  labelCol={{ span: 24 }}
+                  help={destinationError && "Please Select Destination"}
+                  validateStatus={destinationError && "error"}>
+                  <Select
+                    size="large"
+                    showSearch
+                    style={{ width: "400px" }}
+                    value={destination}
+                    placeholder="Select Destination Place"
+                    optionFilterProp="children"
+                    onChange={this.handleDestinationSelect}
+                    onSearch={() => this.setState({ destinationError: false })}
+                    filterOption={(input, option) =>
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {places_data.map((data, index) => <Option key={index} value={data.PlaceId}>{data.PlaceName}</Option>)}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={4}>
+                <Form.Item labelCol={{ span: 24 }} label="Departure Date">
+                  <DatePicker size="large"
+                    style={{ width: "300px" }}
+                    allowClear={false}
+                    format={dateFormat}
+                    disabledDate={this.disabledDate}
+                    value={moment(date, dateFormat)}
+                    onChange={this.handleDateChange} />
+                </Form.Item>
+              </Col>
+            </Row>
           }
-          <br />
-          {flightList &&
-            <FlightList flightList={flightList} date={date} withoutDate={withoutDate} />
+          {
+            places_data &&
+            <Row justify="center" style={{ marginTop: 10 }}>
+              <Col span={12} offset={6}>
+                <Button type="submit" onClick={() => this.handleRouteSubmit(false)} type="primary" >Browse Flights</Button>
+                <Button style={{ marginLeft: "10px" }} type="submit" onClick={() => this.handleRouteSubmit(true)} variant="outlined" color="primary" >Browse Flights Without Date</Button>
+              </Col>
+            </Row>
           }
-          <div className="h-50">
-            {
-              error &&
-              <small style={{ color: "red" }}> No Flight Found. Try Changing date or Location</small>
-            }
-          </div>
-        </Grid>
-      </Container >
+        </Form >
+        <br />
+        <br />
+        {
+          flightList &&
+          <FlightList flightList={flightsData} datacheck={datacheck} withoutDate={withoutDate} />
+        }
+        <div className="h-50">
+          {
+            error &&
+            <small style={{ color: "red" }}> No Flight Found. Try Changing date or Location</small>
+          }
+        </div>
+      </div >
 
     )
   }
@@ -194,6 +271,7 @@ const mapDispatchToProps = (dispatch) => {
     fetchPlaces: (country) => dispatch(fetchPlaces(country)),
     fetchFlights: (data) => dispatch(fetchFlights(data)),
     fetchCountires: () => dispatch(fetchCountires()),
+    resetState: () => dispatch(resetState()),
   }
 }
 

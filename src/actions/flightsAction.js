@@ -2,7 +2,7 @@ import globalAxios from "../util/Api"
 import Axios from 'axios'
 import moment from 'moment'
 
-import { FETCH_PLACES, FETCH_FLIGHTS, START_LOADING, STOP_LOADING, FETCH_COUNTIRES, PLACE_ERROR } from "../constants"
+import { FETCH_PLACES, FETCH_FLIGHTS, START_LOADING, STOP_LOADING, FETCH_COUNTIRES, PLACE_ERROR, RESET_STATE } from "../constants"
 
 
 export const fetchCountires = () => {
@@ -39,5 +39,10 @@ export const fetchFlights = (data, withoutDate) => {
     }).catch(error => {
       dispatch({ type: STOP_LOADING })
     })
+  }
+}
+export const resetState = () => {
+  return (dispatch) => {
+    dispatch({ type: RESET_STATE })
   }
 }

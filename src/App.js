@@ -22,7 +22,7 @@ function App() {
     <Layout>
       <Header className="header" style={{ position: 'fixed', zIndex: 1, width: '100%', }}>
         <div className="logo" >
-          <h2>AirLine</h2>
+          <h2>Airline</h2>
         </div>
         {(login.isLoggedIn || islogin) &&
           <Menu theme="dark" style={{ height: "64px" }} mode="horizontal" defaultSelectedKeys={path === "/international" ? ['2'] : ['1']}>
