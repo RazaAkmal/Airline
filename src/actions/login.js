@@ -1,5 +1,5 @@
 
-import { START_LOGIN_LOADING, LOGIN_USER, WRONG_CREDENTIAL } from '../constants'
+import { START_LOGIN_LOADING, LOGIN_USER, WRONG_CREDENTIAL, REMOVE_ERROR } from '../constants'
 
 export const login_user = (username, password) => {
   return (dispatch) => {
@@ -14,5 +14,11 @@ export const login_user = (username, password) => {
         dispatch({ type: WRONG_CREDENTIAL })
       }, 2000)
     }
+  }
+}
+
+export const removeError = () => {
+  return (dispatch) => {
+    dispatch({ type: REMOVE_ERROR })
   }
 }

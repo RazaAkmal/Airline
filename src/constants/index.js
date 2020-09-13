@@ -12,3 +12,5 @@ export const FETCH_FLIGHTS = 'fetcht_flights'
 export const FETCH_CARIER = 'fetcht_carier'
 export const FETCH_COUNTIRES = 'fetcht_countries'
 export const RESET_STATE = 'reset_state'
+export const REMOVE_ERROR = 'remove_error'
+

@@ -1,7 +1,7 @@
 import React from 'react'
 import OverLoader from './common/loader'
 import '../App.css'
-import { login_user } from '../actions';
+import { login_user, removeError } from '../actions';
 import { connect } from 'react-redux'
 import {
   UserOutlined,
@@ -42,7 +42,7 @@ class LoginPage extends React.Component {
     if ((username && password) !== '')
       login_user(username, password);
     else
-      if ((password && username) === '')
+      if (password === '' && username === '')
         this.setState({ passwordError: true, usernameError: true })
       else if (username === '')
         this.setState({ usernameError: true });
@@ -51,7 +51,7 @@ class LoginPage extends React.Component {
   }
 
   render() {
-    const { isLoading, credential_error } = this.props
+    const { isLoading, credential_error, removeError } = this.props
 
     return (
       <div className="site-card-border-less-wrapper flex-center">
@@ -78,7 +78,11 @@ class LoginPage extends React.Component {
               help={credential_error ? "User with Entered Password Doesn't Exist" : this.state.passwordError && "Please input your password!"}
               validateStatus={(credential_error || this.state.passwordError) && "error"}
             >
-              <Input.Password prefix={<KeyOutlined />} value={this.state.password} onChange={(e) => this.setState({ password: e.target.value, passwordError: false })} />
+              <Input.Password prefix={<KeyOutlined />} value={this.state.password} onChange={(e) => {
+                this.setState({ password: e.target.value, passwordError: false })
+                if (credential_error)
+                  removeError()
+              }} />
             </Form.Item>
             <Form.Item {...tailLayout}>
               <Button onClick={this.handleSubmit} type="primary" >
@@ -160,7 +164,8 @@ const mapStateToProps = ({ login }) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    login_user: (username, password) => dispatch(login_user(username, password))
+    login_user: (username, password) => dispatch(login_user(username, password)),
+    removeError: () => dispatch(removeError())
   }
 }
 
