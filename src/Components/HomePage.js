@@ -93,8 +93,18 @@ class HomePage extends React.Component {
 
 
   handleCountrySelect = (val) => {
-    this.setState({ country: val, origin: '', destination: '', originError: false, destinationError: false })
-    this.props.fetchPlaces(val)
+    const path = window.location.pathname
+    if (path !== '/international') {
+      this.setState({ country: val, origin: '', destination: '', originError: false, destinationError: false })
+    } else {
+      this.setState({ country: val, origin: '', originError: false })
+    }
+    this.props.fetchPlaces(val, "local")
+  }
+
+  handleDestinationCountrySelect = (val) => {
+    this.setState({ destination: '', destinationError: false })
+    this.props.fetchPlaces(val, "international")
   }
 
   handleDestinationSelect = (val) => {
@@ -133,10 +143,12 @@ class HomePage extends React.Component {
 
 
   render() {
-    const { places_data, isLoading, flightList, error, place_error, countries_data } = this.props
+    const { places_data, isLoading, flightList, error, place_error, countries_data, internationa_places_data } = this.props
     const { flightsData, datacheck, origin, destination, date, withoutDate, originError, destinationError } = this.state
     const { Option } = Select;
     const { Title } = Typography;
+    const path = window.location.pathname
+    console.log(internationa_places_data, "internationa_places_data")
     return (
       <div style={{ marginTop: "20px" }}>
         {isLoading && <OverLoader />}
@@ -146,8 +158,8 @@ class HomePage extends React.Component {
           </Col>
         </Row>
         <Form {...formItemLayout}>
-          <Row>
-            <Col span={12} offset={9}>
+          <Row justify="center">
+            <Col span={path === '/international' ? 6 : 12} offset={path !== '/international' && 6}>
               <Form.Item label="Country" labelCol={{ span: 24 }}>
                 <Select
                   size="large"
@@ -165,8 +177,27 @@ class HomePage extends React.Component {
                 </Select>
               </Form.Item>
             </Col>
+            {path === '/international' &&
+              <Col span={6} >
+                <Form.Item label="Destination Country" labelCol={{ span: 24 }}>
+                  <Select
+                    size="large"
+                    showSearch
+                    style={{ width: "300px" }}
+                    placeholder="Select the Destination Country"
+                    optionFilterProp="children"
+                    onChange={this.handleDestinationCountrySelect}
+                    filterOption={(input, option) =>
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {Countries && Countries.map((data, index) => <Option key={index} value={data.name}>{data.name}</Option>)}
+                  </Select>
+                </Form.Item>
+              </Col>
+            }
           </Row>
-          {
+          {(path !== '/international' || internationa_places_data) &&
             places_data &&
             <Row justify="center">
               <Col span={6} >
@@ -209,7 +240,8 @@ class HomePage extends React.Component {
                       option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                     }
                   >
-                    {places_data.map((data, index) => <Option key={index} value={data.PlaceId}>{data.PlaceName}</Option>)}
+                    {path === '/international' ? internationa_places_data.map((data, index) => <Option key={index} value={data.PlaceId}>{data.PlaceName}</Option>) :
+                      places_data.map((data, index) => <Option key={index} value={data.PlaceId}>{data.PlaceName}</Option>)}
                   </Select>
                 </Form.Item>
               </Col>
@@ -226,7 +258,7 @@ class HomePage extends React.Component {
               </Col>
             </Row>
           }
-          {
+          {(path !== '/international' || internationa_places_data) &&
             places_data &&
             <Row justify="center" style={{ marginTop: 10 }}>
               <Col span={12} offset={6}>
@@ -258,6 +290,7 @@ const mapStateToProps = ({ flight }) => {
   return {
     isLoading: flight.loading,
     places_data: flight.places_data,
+    internationa_places_data: flight.internationa_places_data,
     countries: flight.countries,
     flightList: flight.flight_list,
     error: flight.error,
@@ -268,7 +301,7 @@ const mapStateToProps = ({ flight }) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchPlaces: (country) => dispatch(fetchPlaces(country)),
+    fetchPlaces: (country, type) => dispatch(fetchPlaces(country, type)),
     fetchFlights: (data) => dispatch(fetchFlights(data)),
     fetchCountires: () => dispatch(fetchCountires()),
     resetState: () => dispatch(resetState()),

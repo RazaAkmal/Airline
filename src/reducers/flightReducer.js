@@ -1,4 +1,7 @@
-import { FETCH_FLIGHTS, PLACE_ERROR, FETCH_PLACES, START_LOADING, STOP_LOADING, FETCH_COUNTIRES, RESET_STATE } from "../constants"
+import {
+  FETCH_FLIGHTS, PLACE_ERROR, FETCH_PLACES, START_LOADING, STOP_LOADING,
+  FETCH_COUNTIRES, RESET_STATE, FETCH_INTERNATION_PLACES
+} from "../constants"
 
 const INITIAL_STATE = {
   loading: false,
@@ -21,6 +24,7 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         loading: false,
+        internationa_places_data: '',
         flight_list: '',
         places_data: '',
         place_error: false,
@@ -39,6 +43,15 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         places_data: action.payload,
+        flight_list: '',
+        place_error: false,
+        loading: false,
+        error: false
+      }
+    case FETCH_INTERNATION_PLACES:
+      return {
+        ...state,
+        internationa_places_data: action.payload,
         flight_list: '',
         place_error: false,
         loading: false,

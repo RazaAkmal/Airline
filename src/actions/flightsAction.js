@@ -2,7 +2,7 @@ import globalAxios from "../util/Api"
 import Axios from 'axios'
 import moment from 'moment'
 
-import { FETCH_PLACES, FETCH_FLIGHTS, START_LOADING, STOP_LOADING, FETCH_COUNTIRES, PLACE_ERROR, RESET_STATE } from "../constants"
+import { FETCH_PLACES, FETCH_FLIGHTS, START_LOADING, STOP_LOADING, FETCH_COUNTIRES, PLACE_ERROR, RESET_STATE, FETCH_INTERNATION_PLACES } from "../constants"
 
 
 export const fetchCountires = () => {
@@ -17,12 +17,15 @@ export const fetchCountires = () => {
     })
   }
 }
-export const fetchPlaces = (country) => {
+export const fetchPlaces = (country, type) => {
   return (dispatch) => {
     dispatch({ type: START_LOADING })
     globalAxios().get(`apiservices/autosuggest/v1.0/UK/GBP/en-GB/?query=${country}`
     ).then(res => {
-      dispatch({ type: FETCH_PLACES, payload: res.data.Places })
+      if (type === "international")
+        dispatch({ type: FETCH_INTERNATION_PLACES, payload: res.data.Places })
+      else
+        dispatch({ type: FETCH_PLACES, payload: res.data.Places })
 
     }).catch(error => {
       dispatch({ type: PLACE_ERROR })
