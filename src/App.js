@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import logo from './logo.png';
 import './App.css';
 import HomePage from './Components/HomePage'
@@ -11,13 +11,15 @@ import {
 } from "react-router-dom";
 import InternationalPage from './Components/InternationalPage';
 import { Layout, Menu, Button, Row, Col } from 'antd';
-
+import airplane from './background-img.jpg'
 
 function App() {
   const islogin = localStorage.getItem('login');
   const login = useSelector(state => state.login)
   const { Header, Content, Sider } = Layout;
   const path = window.location.pathname
+  const height = useWindowWidth()
+
   return (
     <Layout>
       <Header className="header" style={{ position: 'fixed', zIndex: 1, width: '100%', }}>
@@ -45,11 +47,12 @@ function App() {
         }
       </Header>
       <Content
-        className="site-layout-background"
         style={{
           padding: 24,
           marginTop: 64,
-          minHeight: 380,
+          minHeight: height,
+          background: `url(${airplane})`,
+          backgroundSize: "cover",
         }}
       >
         {(login.isLoggedIn || islogin) ?
@@ -65,6 +68,21 @@ function App() {
       </Content>
     </Layout>
   );
+}
+
+
+function useWindowWidth() {
+
+  const [height, setHeight] = useState(window.innerHeight)
+  useEffect(() => {
+    const handleResize = () => setHeight(window.innerHeight)
+    window.addEventListener("resize", handleResize)
+    return () => {
+      window.removeEventListener("resize", handleResize)
+    }
+  })
+
+  return height
 }
 
 export default App;
