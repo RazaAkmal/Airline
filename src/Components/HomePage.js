@@ -6,7 +6,7 @@ import Countries from './common/countries.json'
 import OverLoader from './common/loader';
 import FlightList from './FlightList';
 import moment from 'moment'
-import { Row, Form, Col, Select, Typography, Button, Space, DatePicker } from 'antd';
+import { Row, Form, Col, Select, Typography, Button, Space, DatePicker, Checkbox } from 'antd';
 import isEmpty from 'lodash.isempty';
 
 const formItemLayout = {
@@ -37,7 +37,9 @@ class HomePage extends React.Component {
     flightsData: [],
     datacheck: 0,
     destinationName: '',
-    originName: ''
+    originName: '',
+    oneway: true,
+    inboundDate: moment(Date()).format('YYYY-MM-DD')
   }
 
   componentDidMount = () => {
@@ -119,7 +121,6 @@ class HomePage extends React.Component {
     const { destinationCountry, country } = this.state
     const { places_data, internationa_places_data } = this.props
     const path = window.location.pathname
-    debugger
     if ((path === '/international' && destinationCountry !== country)) {
       internationa_places_data.forEach(element => {
         if (element.PlaceId === val) {
@@ -165,6 +166,9 @@ class HomePage extends React.Component {
   handleDateChange = val => {
     this.setState({ date: val })
   }
+  handleInboundDateChange = val => {
+    this.setState({ inboundDate: val })
+  }
 
   disabledDate = (current) => {
     return current && current < moment().endOf('day');
@@ -173,11 +177,10 @@ class HomePage extends React.Component {
 
   render() {
     const { places_data, isLoading, flightList, error, place_error, countries_data, internationa_places_data } = this.props
-    const { flightsData, datacheck, origin, destination, country, destinationCountry, date, withoutDate, originError, destinationError, destinationName, originName } = this.state
+    const { flightsData, inboundDate, datacheck, origin, destination, country, destinationCountry, date, withoutDate, originError, destinationError, destinationName, originName, oneway } = this.state
     const { Option } = Select;
     const { Title } = Typography;
     const path = window.location.pathname
-    console.log(internationa_places_data, "internationa_places_data")
     return (
       <div className="content">
         {isLoading && <OverLoader />}
@@ -275,7 +278,7 @@ class HomePage extends React.Component {
                 </Form.Item>
               </Col>
               <Col span={6}>
-                <Form.Item labelCol={{ span: 24 }} label="Departure Date">
+                <Form.Item labelCol={{ span: 24 }} label="Departing Date">
                   <DatePicker size="large"
                     style={{ width: "300px" }}
                     allowClear={false}
@@ -285,6 +288,27 @@ class HomePage extends React.Component {
                     onChange={this.handleDateChange} />
                 </Form.Item>
               </Col>
+            </Row>
+          }
+          {(path !== '/international' || destinationCountry || country === destinationCountry) &&
+            places_data &&
+            <Row justify="center">
+              <Col span={18} >
+                <Checkbox checked={oneway} onChange={() => this.setState({ oneway: !oneway })}>One Way</Checkbox>
+              </Col>
+              {!oneway &&
+                <Col span={8} offset={2}>
+                  <Form.Item labelCol={{ span: 24 }} label="Returning Date">
+                    <DatePicker size="large"
+                      style={{ width: "300px" }}
+                      allowClear={false}
+                      format={dateFormat}
+                      disabledDate={this.disabledDate}
+                      value={moment(inboundDate, dateFormat)}
+                      onChange={this.handleInboundDateChange} />
+                  </Form.Item>
+                </Col>
+              }
             </Row>
           }
           {(path !== '/international' || destinationCountry || country === destinationCountry) &&
