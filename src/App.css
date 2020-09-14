@@ -86,12 +86,6 @@
   [data-theme="dark"] .site-layout-content {
     background: #141414;
   }
-.header Button{
-  float: right;
-  color: rgba(255, 255, 255, 0.65);
-  margin: -70px 28px;
-  line-height: inherit
-}
 .site-card-border-less-wrapper {
   text-align: center;
   padding:100px;

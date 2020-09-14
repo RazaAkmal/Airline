@@ -10,7 +10,7 @@ import {
   Link,
 } from "react-router-dom";
 import InternationalPage from './Components/InternationalPage';
-import { Layout, Menu, Button } from 'antd';
+import { Layout, Menu, Button, Row, Col } from 'antd';
 
 
 function App() {
@@ -24,19 +24,25 @@ function App() {
         <div className="logo" >
           <h2>Airline</h2>
         </div>
-        {(login.isLoggedIn || islogin) &&
-          <Menu theme="dark" style={{ height: "64px" }} mode="horizontal" defaultSelectedKeys={path === "/international" ? ['2'] : ['1']}>
+        <Row>
+          <Col span={22}>
+            {(login.isLoggedIn || islogin) &&
+              <Menu theme="dark" style={{ height: "64px" }} mode="horizontal" defaultSelectedKeys={path === "/international" ? ['2'] : ['1']}>
 
-            <Menu.Item key="1"><Link to="/">Local Flights</Link></Menu.Item>
-            <Menu.Item key="2"><Link to="/international">International Flights</Link></Menu.Item>
+                <Menu.Item key="1"><Link to="/">Local Flights</Link></Menu.Item>
+                <Menu.Item key="2"><Link to="/international">International Flights</Link></Menu.Item>
 
-          </Menu>
+              </Menu>
 
-        }
-        <Button type="link" onClick={() => {
-          localStorage.clear()
-          window.location.reload()
-        }}>Logout</Button>
+            }
+          </Col>
+          <Col span={2}>
+            <Button type="link" onClick={() => {
+              localStorage.clear()
+              window.location.reload()
+            }}>Logout</Button>
+          </Col>
+        </Row>
       </Header>
       <Content
         className="site-layout-background"
