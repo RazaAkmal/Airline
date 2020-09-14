@@ -35,7 +35,9 @@ class HomePage extends React.Component {
     originError: false,
     destinationError: false,
     flightsData: [],
-    datacheck: 0
+    datacheck: 0,
+    destinationName: '',
+    originName: ''
   }
 
   componentDidMount = () => {
@@ -114,10 +116,31 @@ class HomePage extends React.Component {
   }
 
   handleDestinationSelect = (val) => {
-    this.setState({ destination: val, destinationError: false })
+    const { destinationCountry, country } = this.state
+    const { places_data, internationa_places_data } = this.props
+    const path = window.location.pathname
+    debugger
+    if ((path === '/international' && destinationCountry !== country)) {
+      internationa_places_data.forEach(element => {
+        if (element.PlaceId === val) {
+          this.setState({ destinationName: element.PlaceName, destination: val, destinationError: false })
+        }
+      });
+    } else {
+      places_data.forEach(element => {
+        if (element.PlaceId === val) {
+          this.setState({ originName: element.PlaceName, destination: val, destinationError: false })
+        }
+      });
+    }
   }
   handleOriginSelect = (val) => {
-    this.setState({ origin: val, originError: false })
+    const { places_data } = this.props
+    places_data.forEach(element => {
+      if (element.PlaceId === val) {
+        this.setState({ originName: element.PlaceName, origin: val, originError: false })
+      }
+    });
   }
 
   handleRouteSubmit = (noDate) => {
@@ -150,7 +173,7 @@ class HomePage extends React.Component {
 
   render() {
     const { places_data, isLoading, flightList, error, place_error, countries_data, internationa_places_data } = this.props
-    const { flightsData, datacheck, origin, destination, country, destinationCountry, date, withoutDate, originError, destinationError } = this.state
+    const { flightsData, datacheck, origin, destination, country, destinationCountry, date, withoutDate, originError, destinationError, destinationName, originName } = this.state
     const { Option } = Select;
     const { Title } = Typography;
     const path = window.location.pathname
@@ -278,7 +301,7 @@ class HomePage extends React.Component {
         <br />
         {
           flightList &&
-          <FlightList flightList={flightsData} datacheck={datacheck} withoutDate={withoutDate} />
+          <FlightList flightList={flightsData} datacheck={datacheck} withoutDate={withoutDate} origin={originName} destination={destinationName} />
         }
         <div className="h-50">
           {

@@ -101,3 +101,23 @@
 .ant-card{
     background: rgb(225 225 225 /74%) !important;
 }
+
+.content-header__section {
+    font-weight: 700;
+    font-family: HelveticaNeue,Helvetica Neue,Helvetica,Arial,Lucida Grande,sans-serif;
+    display: block;
+    margin: 0 auto 10px;
+    padding: 0;
+    color: #666;
+    font-size: 1rem;
+    letter-spacing: 4px;
+    text-align: center;
+    text-transform: uppercase;
+}
+.content-header {
+    font-weight: 900;
+    font-family: Bookman, URW Bookman L, serif;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
