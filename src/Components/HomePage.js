@@ -27,6 +27,7 @@ class HomePage extends React.Component {
 
   state = {
     country: '',
+    destinationCountry: '',
     destination: '',
     origin: '',
     date: moment(Date()).format('YYYY-MM-DD'),
@@ -103,8 +104,13 @@ class HomePage extends React.Component {
   }
 
   handleDestinationCountrySelect = (val) => {
-    this.setState({ destination: '', destinationError: false })
-    this.props.fetchPlaces(val, "international")
+    if (this.state.country !== val) {
+      this.setState({ destinationCountry: val, destination: '', destinationError: false })
+      this.props.fetchPlaces(val, "international")
+    } else {
+      this.setState({ destinationCountry: val })
+    }
+
   }
 
   handleDestinationSelect = (val) => {
@@ -144,7 +150,7 @@ class HomePage extends React.Component {
 
   render() {
     const { places_data, isLoading, flightList, error, place_error, countries_data, internationa_places_data } = this.props
-    const { flightsData, datacheck, origin, destination, date, withoutDate, originError, destinationError } = this.state
+    const { flightsData, datacheck, origin, destination, country, destinationCountry, date, withoutDate, originError, destinationError } = this.state
     const { Option } = Select;
     const { Title } = Typography;
     const path = window.location.pathname
@@ -197,7 +203,7 @@ class HomePage extends React.Component {
               </Col>
             }
           </Row>
-          {(path !== '/international' || internationa_places_data) &&
+          {(path !== '/international' || destinationCountry || country === destinationCountry) &&
             places_data &&
             <Row justify="center">
               <Col span={6} >
@@ -240,7 +246,7 @@ class HomePage extends React.Component {
                       option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                     }
                   >
-                    {path === '/international' ? internationa_places_data.map((data, index) => <Option key={index} value={data.PlaceId}>{data.PlaceName}</Option>) :
+                    {(path === '/international' && destinationCountry !== country) ? internationa_places_data && internationa_places_data.map((data, index) => <Option key={index} value={data.PlaceId}>{data.PlaceName}</Option>) :
                       places_data.map((data, index) => <Option key={index} value={data.PlaceId}>{data.PlaceName}</Option>)}
                   </Select>
                 </Form.Item>
