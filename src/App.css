@@ -23,6 +23,11 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
+.content{
+  margin-top: 20px;
+    background-color: rgb(225 225 225 /74%);
+    padding: 14px;
+}
 
 .App-header img{
   width: 200px
@@ -80,7 +85,7 @@
   /* margin: 16px 24px 16px 0; */
   float: left;
 }
-.logo h2{
+.logo h1{
   color: white
 }
   [data-theme="dark"] .site-layout-content {
@@ -89,4 +94,10 @@
 .site-card-border-less-wrapper {
   text-align: center;
   padding:100px;
+}
+.ant-table{
+  background:none !important;
+}
+.ant-card{
+    background: rgb(225 225 225 /74%) !important;
 }

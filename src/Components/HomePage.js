@@ -156,11 +156,11 @@ class HomePage extends React.Component {
     const path = window.location.pathname
     console.log(internationa_places_data, "internationa_places_data")
     return (
-      <div style={{ marginTop: "20px" }}>
+      <div className="content">
         {isLoading && <OverLoader />}
         <Row>
           <Col span={12} offset={10}>
-            <h2>Welcome To Airline </h2>
+            <h1>Welcome To Airline </h1>
           </Col>
         </Row>
         <Form {...formItemLayout}>
@@ -264,7 +264,7 @@ class HomePage extends React.Component {
               </Col>
             </Row>
           }
-          {(path !== '/international' || internationa_places_data) &&
+          {(path !== '/international' || destinationCountry || country === destinationCountry) &&
             places_data &&
             <Row justify="center" style={{ marginTop: 10 }}>
               <Col span={12} offset={6}>

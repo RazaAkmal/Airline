@@ -56,7 +56,7 @@ class LoginPage extends React.Component {
     return (
       <div className="site-card-border-less-wrapper flex-center" >
         {isLoading && <OverLoader />}
-        <Card title="Welcome To Airline" style={{ minWidth: 600 }}>
+        <Card title="Welcome To Airline" style={{ minWidth: 700 }}>
           <Form
             {...layout}
             name="basic"

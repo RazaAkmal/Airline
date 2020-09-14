@@ -24,7 +24,7 @@ function App() {
     <Layout>
       <Header className="header" style={{ position: 'fixed', zIndex: 1, width: '100%', }}>
         <div className="logo" >
-          <h2>Airline</h2>
+          <h1>Airline</h1>
         </div>
         {(login.isLoggedIn || islogin) &&
           <Row>
