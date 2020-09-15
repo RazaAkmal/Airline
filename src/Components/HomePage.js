@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import '../App.css'
 import { connect } from 'react-redux'
 import { fetchPlaces, fetchFlights, fetchCountires, resetState } from '../actions';
@@ -6,7 +6,7 @@ import Countries from './common/countries.json'
 import OverLoader from './common/loader';
 import FlightList from './FlightList';
 import moment from 'moment'
-import { Row, Form, Col, Select, Typography, Button, Space, DatePicker, Checkbox } from 'antd';
+import { Row, Form, Col, Select, Typography, Button, Space, DatePicker, Checkbox, Modal } from 'antd';
 import isEmpty from 'lodash.isempty';
 
 const formItemLayout = {
@@ -26,6 +26,7 @@ const dateFormat = 'YYYY-MM-DD';
 class HomePage extends React.Component {
 
   state = {
+    selectedFlights: [],
     country: '',
     destinationCountry: '',
     destination: '',
@@ -39,7 +40,8 @@ class HomePage extends React.Component {
     destinationName: '',
     originName: '',
     oneway: true,
-    inboundDate: moment(Date()).format('YYYY-MM-DD')
+    inboundDate: moment(Date()).format('YYYY-MM-DD'),
+    rowKey: []
   }
 
   componentDidMount = () => {
@@ -96,6 +98,10 @@ class HomePage extends React.Component {
   }
 
 
+  handlSelectedFlights = (selectedRow, Key) => {
+    this.setState({ selectedFlights: selectedRow, rowKey: Key })
+  }
+
 
   handleCountrySelect = (val) => {
     const path = window.location.pathname
@@ -148,10 +154,10 @@ class HomePage extends React.Component {
     const data = this.state
     if (data.origin !== '' && data.destination !== '') {
       if (noDate) {
-        this.setState({ withoutDate: true })
+        this.setState({ withoutDate: true, selectedFlights: [], rowKey: [] })
         this.props.fetchFlights(data, true)
       } else {
-        this.setState({ withoutDate: false })
+        this.setState({ withoutDate: false, selectedFlights: [], rowKey: [] })
         this.props.fetchFlights(data, false)
       }
     } else if (data.origin === '' && data.destination === '') {
@@ -174,10 +180,44 @@ class HomePage extends React.Component {
     return current && current < moment().endOf('day');
   }
 
+  handleBookFlight = () => {
+    const { selectedFlights } = this.state
+    let bookedflights = JSON.parse(localStorage.getItem('selectedFlights'))
+    let check = 0
+    if (selectedFlights) {
+      if (bookedflights !== null) {
+        bookedflights.forEach(el => {
+          if (selectedFlights[0].date === el.date && el.from[0] === selectedFlights[0].from[0] && el.to[0] === selectedFlights[0].to[0]) {
+            check++
+          }
+        })
+        if (check !== 0) {
+          Modal.error({
+            title: 'You Have Already Booked This Flight',
+          });
+        } else {
+          bookedflights.push(selectedFlights[0])
+          localStorage.setItem('selectedFlights', JSON.stringify(bookedflights))
+          Modal.success({
+            content: 'Your Flight Has been Booked Successfully.',
+          });
+        }
+      } else {
+        localStorage.setItem('selectedFlights', JSON.stringify(selectedFlights))
+        Modal.success({
+          content: 'Your Flight Has been Booked Successfully.',
+        });
+      }
+    }
+    else
+      Modal.error({
+        title: 'Please Select the Flight First',
+      });
+  }
 
   render() {
     const { places_data, isLoading, flightList, error, place_error, countries_data, internationa_places_data } = this.props
-    const { flightsData, inboundDate, datacheck, origin, destination, country, destinationCountry, date, withoutDate, originError, destinationError, destinationName, originName, oneway } = this.state
+    const { selectedFlights, rowKey, flightsData, inboundDate, datacheck, origin, destination, country, destinationCountry, date, withoutDate, originError, destinationError, destinationName, originName, oneway } = this.state
     const { Option } = Select;
     const { Title } = Typography;
     const path = window.location.pathname
@@ -325,7 +365,10 @@ class HomePage extends React.Component {
         <br />
         {
           flightList &&
-          <FlightList flightList={flightsData} datacheck={datacheck} withoutDate={withoutDate} origin={originName} destination={destinationName} />
+          <Fragment>
+            <FlightList handlSelectedFlights={this.handlSelectedFlights} rowKey={rowKey} flightList={flightsData} datacheck={datacheck} withoutDate={withoutDate} origin={originName} destination={destinationName} />
+            <Button type="submit" onClick={this.handleBookFlight} type="primary" >Book Flights</Button>
+          </Fragment>
         }
         <div className="h-50">
           {

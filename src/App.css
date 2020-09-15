@@ -120,4 +120,6 @@
     letter-spacing: 1px;
     text-align: center;
 }
-
+.ant-empty-description {
+  font-weight: bold !important;
+}

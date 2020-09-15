@@ -12,6 +12,7 @@ import {
 import InternationalPage from './Components/InternationalPage';
 import { Layout, Menu, Button, Row, Col } from 'antd';
 import airplane from './background-img.jpg'
+import Booking from './Components/Booking';
 
 function App() {
   const islogin = localStorage.getItem('login');
@@ -29,17 +30,18 @@ function App() {
         {(login.isLoggedIn || islogin) &&
           <Row>
             <Col span={22}>
-              <Menu theme="dark" style={{ height: "64px" }} mode="horizontal" defaultSelectedKeys={path === "/international" ? ['2'] : ['1']}>
+              <Menu theme="dark" style={{ height: "64px" }} mode="horizontal" defaultSelectedKeys={(path === "/international" && ['2']) || (path === "/booking" && ['3'] || path === "/" && ['1'])}>
 
                 <Menu.Item key="1"><Link to="/">Local Flights</Link></Menu.Item>
                 <Menu.Item key="2"><Link to="/international">International Flights</Link></Menu.Item>
+                <Menu.Item key="3"><Link to="/booking">Bookings</Link></Menu.Item>
 
               </Menu>
 
             </Col>
             <Col span={2}>
               <Button type="link" onClick={() => {
-                localStorage.clear()
+                localStorage.removeItem("login")
                 window.location.reload()
               }}>Logout</Button>
             </Col>
@@ -62,6 +64,9 @@ function App() {
             </Route>
             <Route exact path="/">
               <HomePage />
+            </Route>
+            <Route exact path="/booking">
+              <Booking />
             </Route>
           </div>
           : <LoginPage />}

@@ -1,6 +1,6 @@
 import React from 'react'
 import isEmpty from 'lodash.isempty';
-import { Table, } from 'antd';
+import { Table, Button, Row, Col } from 'antd';
 
 
 const columns = [
@@ -38,14 +38,33 @@ const columns = [
 
 
 export default function FlightList(props) {
+
+  const rowSelection = {
+    selectedRowKeys: props.rowKey,
+    onChange: (selectedRowKeys, selectedRows) => {
+      props.handlSelectedFlights(selectedRows, selectedRowKeys)
+    },
+  };
+
   return (
     <div>
       {!isEmpty(props.flightList) &&
         <div>
-          <p className="content-header__section">Results</p>
-          <h1 className="content-header">Flight Schadule For {props.origin} to {props.destination}</h1>
-          <h3 className="content-header">{props.withoutDate ? "From" : "On"} {props.flightList[0].date} </h3>
-          <Table columns={columns} dataSource={props.flightList} />
+          <Row justify="center">
+            <Col span={12}>
+              <p className="content-header__section">Results</p>
+              <h1 className="content-header">Flight Schadule For {props.origin} to {props.destination}</h1>
+              <h3 className="content-header">{props.withoutDate ? "From" : "On"} {props.flightList[0].date} </h3>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={24}>
+              <Table columns={columns} dataSource={props.flightList} rowSelection={{
+                type: "radio",
+                ...rowSelection,
+              }} />
+            </Col>
+          </Row>
         </div>
       }
       {props.datacheck === 0 || isEmpty(props.flightList) ? <small style={{ color: "red" }}> No Flight Found. Try Changing date or Location</small> : ''}
