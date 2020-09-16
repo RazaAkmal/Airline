@@ -15,7 +15,7 @@ const columns = [
     key: 'from',
   },
   {
-    title: 'Fligh To',
+    title: 'Flight To',
     dataIndex: 'to',
     key: 'to',
   },
@@ -53,7 +53,7 @@ export default function FlightList(props) {
           <Row justify="center">
             <Col span={12}>
               <p className="content-header__section">Results</p>
-              <h1 className="content-header">Flight Schadule For {props.origin} to {props.destination}</h1>
+              <h1 className="content-header">Flight Schedule For {props.origin} to {props.destination}</h1>
               <h3 className="content-header">{props.withoutDate ? "From" : "On"} {props.flightList[0].date} </h3>
             </Col>
           </Row>
