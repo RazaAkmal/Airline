@@ -30,7 +30,7 @@ function App() {
         {(login.isLoggedIn || islogin) &&
           <Row>
             <Col span={22}>
-              <Menu theme="dark" style={{ height: "64px" }} mode="horizontal" defaultSelectedKeys={(path === "/international" && ['2']) || (path === "/booking" && ['3'] || path === "/" && ['1'])}>
+              <Menu theme="dark" style={{ height: "64px" }} mode="horizontal" defaultSelectedKeys={(path === "/international" && ['2']) || (path === "/booking" && ['3']) || (path === "/" && ['1']) || ['0']}>
 
                 <Menu.Item key="1"><Link to="/">Local Flights</Link></Menu.Item>
                 <Menu.Item key="2"><Link to="/international">International Flights</Link></Menu.Item>
