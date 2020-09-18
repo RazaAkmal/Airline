@@ -8,11 +8,13 @@ import 'antd/dist/antd.css';
 import {
   Route,
   Link,
+  Switch
 } from "react-router-dom";
 import InternationalPage from './Components/InternationalPage';
 import { Layout, Menu, Button, Row, Col } from 'antd';
 import airplane from './background-img.jpg'
 import Booking from './Components/Booking';
+import PageNotFound from './Components/PageNotFound';
 
 function App() {
   const islogin = localStorage.getItem('login');
@@ -59,15 +61,20 @@ function App() {
       >
         {(login.isLoggedIn || islogin) ?
           <div>
-            <Route path="/international">
-              <InternationalPage />
-            </Route>
-            <Route exact path="/">
-              <HomePage />
-            </Route>
-            <Route exact path="/booking">
-              <Booking />
-            </Route>
+            <Switch>
+              <Route path="/international">
+                <InternationalPage />
+              </Route>
+              <Route exact path="/">
+                <HomePage />
+              </Route>
+              <Route exact path="/booking">
+                <Booking />
+              </Route>
+              <Route>
+                <PageNotFound />
+              </Route>
+            </Switch>
           </div>
           : <LoginPage />}
       </Content>
