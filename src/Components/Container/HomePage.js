@@ -1,10 +1,10 @@
 import React, { Fragment } from 'react'
-import '../App.css'
+import '../../App.css'
 import { connect } from 'react-redux'
-import { fetchPlaces, fetchFlights, fetchCountires, resetState } from '../actions';
-import Countries from './common/countries.json'
-import OverLoader from './common/loader';
-import FlightList from './FlightList';
+import { fetchPlaces, fetchFlights, fetchCountires, resetState } from '../../actions';
+import Countries from '../common/countries.json'
+import OverLoader from '../common/loader';
+import FlightList from '../FlightList';
 import moment from 'moment'
 import { Row, Form, Col, Select, Typography, Button, Space, DatePicker, Checkbox, Modal } from 'antd';
 import isEmpty from 'lodash.isempty';

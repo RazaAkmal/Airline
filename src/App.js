@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import logo from './logo.png';
 import './App.css';
-import HomePage from './Components/HomePage'
 import LoginPage from './Components/LoginPage'
 import { useSelector } from 'react-redux'
 import 'antd/dist/antd.css';
@@ -15,6 +14,7 @@ import { Layout, Menu, Button, Row, Col } from 'antd';
 import airplane from './background-img.jpg'
 import Booking from './Components/Booking';
 import PageNotFound from './Components/PageNotFound';
+import HomePage from './Components/Container/HomePage';
 
 function App() {
   const islogin = localStorage.getItem('login');

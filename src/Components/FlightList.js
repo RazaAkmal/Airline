@@ -8,6 +8,9 @@ const columns = [
     title: 'Departure Date',
     dataIndex: 'date',
     key: 'date',
+    sorter: {
+      compare: (a, b) => new Date(a.date) - new Date(b.date),
+    },
   },
   {
     title: 'Flight From',
@@ -23,6 +26,9 @@ const columns = [
     title: 'Direct Flight',
     dataIndex: 'direct',
     key: 'direct',
+    sorter: {
+      compare: (a, b) => a.direct.length - b.direct.length,
+    },
   },
   {
     title: 'Carriers',
@@ -33,6 +39,9 @@ const columns = [
     title: 'Ticket Price',
     dataIndex: 'price',
     key: 'price',
+    sorter: {
+      compare: (a, b) => Number(a.price.slice(1)) - Number(b.price.slice(1)),
+    },
   },
 ];
 
