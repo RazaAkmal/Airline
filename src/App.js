@@ -15,6 +15,9 @@ import airplane from './background-img.jpg'
 import Booking from './Components/Booking';
 import PageNotFound from './Components/PageNotFound';
 import HomePage from './Components/Container/HomePage';
+import { useTranslation } from 'react-i18next'
+
+
 
 function App() {
   const islogin = localStorage.getItem('login');
@@ -22,7 +25,12 @@ function App() {
   const { Header, Content, Sider } = Layout;
   const path = window.location.pathname
   const height = useWindowWidth()
+  const { t, i18n } = useTranslation()
 
+
+  const changeLanguage = (language) => {
+    i18n.changeLanguage(language)
+  }
   return (
     <Layout>
       <Header className="header" style={{ position: 'fixed', zIndex: 1, width: '100%', }}>
@@ -31,15 +39,23 @@ function App() {
         </div>
         {(login.isLoggedIn || islogin) &&
           <Row>
-            <Col span={22}>
+            <Col span={18}>
               <Menu theme="dark" style={{ height: "64px" }} mode="horizontal" defaultSelectedKeys={(path === "/international" && ['2']) || (path === "/booking" && ['3']) || (path === "/" && ['1']) || ['0']}>
 
-                <Menu.Item key="1"><Link to="/">Local Flights</Link></Menu.Item>
-                <Menu.Item key="2"><Link to="/international">International Flights</Link></Menu.Item>
-                <Menu.Item key="3"><Link to="/booking">Bookings</Link></Menu.Item>
+                <Menu.Item key="1"><Link to="/">{t('localFlight')}</Link></Menu.Item>
+                <Menu.Item key="2"><Link to="/international">{t('internationalFlight')}</Link></Menu.Item>
+                <Menu.Item key="3"><Link to="/booking">{t('booking')}</Link></Menu.Item>
 
               </Menu>
 
+            </Col>
+            <Col span={4}>
+              <Button type="link" onClick={() => {
+                changeLanguage("en")
+              }}>EN</Button>
+              <Button type="link" onClick={() => {
+                changeLanguage("de")
+              }}>DE</Button>
             </Col>
             <Col span={2}>
               <Button type="link" onClick={() => {

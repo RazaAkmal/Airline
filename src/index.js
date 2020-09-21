@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
@@ -12,15 +12,19 @@ import {
   BrowserRouter as Router
 } from "react-router-dom";
 import reducers from "./reducers"
-
+import './i18n'
 const store = createStore(reducers, composeWithDevTools(applyMiddleware(ReduxThunk)))
 
 ReactDOM.render(
-  <Provider store={store}>
-    <Router>
-      <App />
-    </Router>
-  </Provider>,
+  <React.StrictMode>
+    <Provider store={store}>
+      <Router>
+        <Suspense fallback={<div>Loading...</div>}>
+          <App />
+        </Suspense>
+      </Router>
+    </Provider>
+  </React.StrictMode >,
   document.getElementById('root')
 );
 

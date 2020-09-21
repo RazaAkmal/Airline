@@ -2,6 +2,8 @@ import React from 'react'
 import '../App.css'
 import { Table, Button, Row, Col, ConfigProvider } from 'antd';
 import { Link } from 'react-router-dom'
+import { Trans } from 'react-i18next';
+
 const columns = [
   {
     title: 'Departure Date',
@@ -62,7 +64,7 @@ export default function Booking() {
       <div className="content">
         <Row justify="center">
           <Col span={12}>
-            <h1 className="content-header">Your Booking</h1>
+            <h1 className="content-header"><Trans i18nKey="bookingTitle" /></h1>
           </Col>
         </Row>
         <Row>

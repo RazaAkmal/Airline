@@ -8,6 +8,7 @@ import FlightList from '../FlightList';
 import moment from 'moment'
 import { Row, Form, Col, Select, Typography, Button, Space, DatePicker, Checkbox, Modal } from 'antd';
 import isEmpty from 'lodash.isempty';
+import { withTranslation, Trans } from 'react-i18next';
 
 const formItemLayout = {
   labelCol: {
@@ -224,9 +225,9 @@ class HomePage extends React.Component {
     return (
       <div className="content">
         {isLoading && <OverLoader />}
-        <Row>
-          <Col span={12} offset={10}>
-            <h1>Welcome To Airline </h1>
+        <Row justify="center">
+          <Col span={12} offset={6} >
+            <h1> <Trans i18nKey="title" /></h1>
           </Col>
         </Row>
         <Form {...formItemLayout}>
@@ -236,7 +237,7 @@ class HomePage extends React.Component {
                 <Select
                   size="large"
                   showSearch
-                  style={{ width: "300px" }}
+                  style={{ width: "250px" }}
                   placeholder="Select the Country"
                   optionFilterProp="children"
                   onChange={this.handleCountrySelect}
@@ -255,7 +256,7 @@ class HomePage extends React.Component {
                   <Select
                     size="large"
                     showSearch
-                    style={{ width: "300px" }}
+                    style={{ width: "250px" }}
                     placeholder="Select the Destination Country"
                     optionFilterProp="children"
                     onChange={this.handleDestinationCountrySelect}
@@ -279,7 +280,7 @@ class HomePage extends React.Component {
                   <Select
                     size="large"
                     showSearch
-                    style={{ width: "300px" }}
+                    style={{ width: "250px" }}
                     value={origin}
                     placeholder="Select Origin Place"
                     optionFilterProp="children"
@@ -302,7 +303,7 @@ class HomePage extends React.Component {
                   <Select
                     size="large"
                     showSearch
-                    style={{ width: "300px" }}
+                    style={{ width: "250px" }}
                     value={destination}
                     placeholder="Select Destination Place"
                     optionFilterProp="children"
@@ -320,7 +321,7 @@ class HomePage extends React.Component {
               <Col span={6}>
                 <Form.Item labelCol={{ span: 24 }} label="Departing Date">
                   <DatePicker size="large"
-                    style={{ width: "300px" }}
+                    style={{ width: "250px" }}
                     allowClear={false}
                     format={dateFormat}
                     disabledDate={this.disabledDate}
@@ -340,7 +341,7 @@ class HomePage extends React.Component {
                 <Col span={8} offset={2}>
                   <Form.Item labelCol={{ span: 24 }} label="Returning Date">
                     <DatePicker size="large"
-                      style={{ width: "300px" }}
+                      style={{ width: "250px" }}
                       allowClear={false}
                       format={dateFormat}
                       disabledDate={this.disabledDate}
@@ -406,4 +407,7 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomePage)
+const HomePageComponent = withTranslation()(HomePage)
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomePageComponent)
