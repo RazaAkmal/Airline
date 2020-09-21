@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import logo from './logo.png';
 import './App.css';
 import LoginPage from './Components/LoginPage'
@@ -34,37 +34,41 @@ function App() {
   return (
     <Layout>
       <Header className="header" style={{ position: 'fixed', zIndex: 1, width: '100%', }}>
-        <div className="logo" >
-          <h1>Airline</h1>
-        </div>
-        {(login.isLoggedIn || islogin) &&
-          <Row>
-            <Col span={18}>
-              <Menu theme="dark" style={{ height: "64px" }} mode="horizontal" defaultSelectedKeys={(path === "/international" && ['2']) || (path === "/booking" && ['3']) || (path === "/" && ['1']) || ['0']}>
+        <Row>
+          <Col span={4}>
+            <h1 style={{ color: "white" }}>Airline</h1>
+          </Col>
+          {(login.isLoggedIn || islogin) &&
+            <Fragment>
+              <Col span={14}>
+                <Menu theme="dark" style={{ height: "64px" }} mode="horizontal" defaultSelectedKeys={(path === "/international" && ['2']) || (path === "/booking" && ['3']) || (path === "/" && ['1']) || ['0']}>
 
-                <Menu.Item key="1"><Link to="/">{t('localFlight')}</Link></Menu.Item>
-                <Menu.Item key="2"><Link to="/international">{t('internationalFlight')}</Link></Menu.Item>
-                <Menu.Item key="3"><Link to="/booking">{t('booking')}</Link></Menu.Item>
+                  <Menu.Item key="1"><Link to="/">{t('localFlight')}</Link></Menu.Item>
+                  <Menu.Item key="2"><Link to="/international">{t('internationalFlight')}</Link></Menu.Item>
+                  <Menu.Item key="3"><Link to="/booking">{t('booking')}</Link></Menu.Item>
 
-              </Menu>
+                </Menu>
 
-            </Col>
-            <Col span={4}>
-              <Button type="link" onClick={() => {
-                changeLanguage("en")
-              }}>EN</Button>
-              <Button type="link" onClick={() => {
-                changeLanguage("de")
-              }}>DE</Button>
-            </Col>
-            <Col span={2}>
-              <Button type="link" onClick={() => {
-                localStorage.removeItem("login")
-                window.location.reload()
-              }}>Logout</Button>
-            </Col>
-          </Row>
-        }
+              </Col>
+              <Col span={1}>
+                <Button type="link" onClick={() => {
+                  changeLanguage("en")
+                }}>EN</Button>
+              </Col>
+              <Col span={3}>
+                <Button type="link" onClick={() => {
+                  changeLanguage("de")
+                }}>DE</Button>
+              </Col>
+              <Col span={2}>
+                <Button type="link" onClick={() => {
+                  localStorage.removeItem("login")
+                  window.location.reload()
+                }}>Logout</Button>
+              </Col>
+            </Fragment>
+          }
+        </Row>
       </Header>
       <Content
         style={{
