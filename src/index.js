@@ -13,13 +13,16 @@ import {
 } from "react-router-dom";
 import reducers from "./reducers"
 import './i18n'
+import OverLoader from './Components/common/loader';
+
+
 const store = createStore(reducers, composeWithDevTools(applyMiddleware(ReduxThunk)))
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <Router>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<OverLoader />}>
           <App />
         </Suspense>
       </Router>
