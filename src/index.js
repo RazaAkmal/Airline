@@ -19,15 +19,13 @@ import OverLoader from './Components/common/loader';
 const store = createStore(reducers, composeWithDevTools(applyMiddleware(ReduxThunk)))
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <Router>
-        <Suspense fallback={<OverLoader />}>
-          <App />
-        </Suspense>
-      </Router>
-    </Provider>
-  </React.StrictMode >,
+  <Provider store={store}>
+    <Router>
+      <Suspense fallback={<OverLoader />}>
+        <App />
+      </Suspense>
+    </Router>
+  </Provider>,
   document.getElementById('root')
 );
 

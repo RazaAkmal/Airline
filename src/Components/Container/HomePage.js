@@ -233,7 +233,7 @@ class HomePage extends React.Component {
         <Form {...formItemLayout}>
           <Row justify="center">
             <Col span={path === '/international' ? 6 : 12} offset={path !== '/international' && 6}>
-              <Form.Item label="Country" labelCol={{ span: 24 }}>
+              <Form.Item label={<Trans i18nKey="country" />} labelCol={{ span: 24 }}>
                 <Select
                   size="large"
                   showSearch
@@ -252,7 +252,7 @@ class HomePage extends React.Component {
             </Col>
             {path === '/international' &&
               <Col span={6} >
-                <Form.Item label="Destination Country" labelCol={{ span: 24 }}>
+                <Form.Item label={<Trans i18nKey="destinationCountry" />} labelCol={{ span: 24 }}>
                   <Select
                     size="large"
                     showSearch

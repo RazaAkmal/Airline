@@ -3,5 +3,8 @@
   "bookingTitle": "Your Bookings",
   "localFlight": "Local Flights",
   "internationalFlight": "International Flights",
-  "booking": "Booking"
+  "booking": "Booking",
+  "logout": "Logout",
+  "country": "Country",
+  "destinationCountry": "Destination country"
 }

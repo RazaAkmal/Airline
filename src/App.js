@@ -64,7 +64,7 @@ function App() {
                 <Button type="link" onClick={() => {
                   localStorage.removeItem("login")
                   window.location.reload()
-                }}>Logout</Button>
+                }}>{t('logout')}</Button>
               </Col>
             </Fragment>
           }

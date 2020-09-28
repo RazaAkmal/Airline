@@ -3,5 +3,8 @@
   "bookingTitle": "Ihre Buchungen",
   "localFlight": "Lokaler Flüge",
   "internationalFlight": "Internationale Flüge",
-  "booking": "Buchung"
+  "booking": "Buchung",
+  "logout": "Se déconnecter",
+  "country": "Pays",
+  "destinationCountry": "Pays de destination"
 }
