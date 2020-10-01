@@ -16,6 +16,7 @@ import Booking from './Components/Booking';
 import PageNotFound from './Components/PageNotFound';
 import HomePage from './Components/Container/HomePage';
 import { useTranslation } from 'react-i18next'
+import ReactGA from 'react-ga';
 
 
 
@@ -31,6 +32,13 @@ function App() {
   const changeLanguage = (language) => {
     i18n.changeLanguage(language)
   }
+
+
+  useEffect(() => {
+    ReactGA.initialize('UA-179388287-1');
+    ReactGA.pageview(window.location.pathname + window.location.search)
+  }, [])
+
   return (
     <Layout>
       <Header className="header" style={{ position: 'fixed', zIndex: 1, width: '100%', }}>
