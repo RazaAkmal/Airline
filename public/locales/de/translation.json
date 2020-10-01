@@ -6,5 +6,6 @@
   "booking": "Buchung",
   "logout": "Se déconnecter",
   "country": "Pays",
-  "destinationCountry": "Pays de destination"
+  "destinationCountry": "Pays de destination",
+  "charts": "Graphiques"
 }

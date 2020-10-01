@@ -6,5 +6,6 @@
   "booking": "Booking",
   "logout": "Logout",
   "country": "Country",
-  "destinationCountry": "Destination country"
+  "destinationCountry": "Destination country",
+  "charts": "Charts"
 }

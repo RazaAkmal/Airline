@@ -123,3 +123,8 @@
 .ant-empty-description {
   font-weight: bold !important;
 }
+
+.chart-class {
+  position: relative;
+  width: 600px; 
+}

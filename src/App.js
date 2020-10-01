@@ -14,6 +14,7 @@ import { Layout, Menu, Button, Row, Col } from 'antd';
 import airplane from './background-img.jpg'
 import Booking from './Components/Booking';
 import PageNotFound from './Components/PageNotFound';
+import Charts from './Components/Charts';
 import HomePage from './Components/Container/HomePage';
 import { useTranslation } from 'react-i18next'
 import ReactGA from 'react-ga';
@@ -49,11 +50,13 @@ function App() {
           {(login.isLoggedIn || islogin) &&
             <Fragment>
               <Col span={14}>
-                <Menu theme="dark" style={{ height: "64px" }} mode="horizontal" defaultSelectedKeys={(path === "/international" && ['2']) || (path === "/booking" && ['3']) || (path === "/" && ['1']) || ['0']}>
+                <Menu theme="dark" style={{ height: "64px" }} mode="horizontal" defaultSelectedKeys={(path === "/charts" && ['4']) || (path === "/international" && ['2']) ||
+                  (path === "/booking" && ['3']) || (path === "/" && ['1']) || ['0']}>
 
                   <Menu.Item key="1"><Link to="/">{t('localFlight')}</Link></Menu.Item>
                   <Menu.Item key="2"><Link to="/international">{t('internationalFlight')}</Link></Menu.Item>
                   <Menu.Item key="3"><Link to="/booking">{t('booking')}</Link></Menu.Item>
+                  <Menu.Item key="4"><Link to="/charts">{t('charts')}</Link></Menu.Item>
 
                 </Menu>
 
@@ -98,6 +101,9 @@ function App() {
               </Route>
               <Route exact path="/booking">
                 <Booking />
+              </Route>
+              <Route exact path="/charts">
+                <Charts />
               </Route>
               <Route>
                 <PageNotFound />
