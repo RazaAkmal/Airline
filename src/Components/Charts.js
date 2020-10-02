@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Spring } from 'react-spring/renderprops'
-import { Line } from 'react-chartjs-2'
+import { Line, Doughnut, Polar } from 'react-chartjs-2'
+import { Col, Row } from 'antd';
 
 class Charts extends Component {
 
@@ -17,7 +18,25 @@ class Charts extends Component {
           data: [14, 23, 15, 10, 32, 65, 12, 54, 25, 76, 23, 58],
         }
       ]
-    }
+    },
+    dognutData: {
+      labels: ['Local Flights', 'International Flights'],
+      datasets: [
+        {
+          data: ['25.58', '33.92'],
+          backgroundColor: ['#4BC0C0', '#36A2EC']
+        }
+      ]
+    },
+    polarData: {
+      labels: ['Local Flights', 'International Flights'],
+      datasets: [
+        {
+          data: ['25.58', '33.92'],
+          backgroundColor: ['#4BC0C0', '#36A2EC']
+        }
+      ]
+    },
   }
 
   setGradiantColor = (canvas, color) => {
@@ -32,7 +51,7 @@ class Charts extends Component {
     const data = this.state.data
 
     if (data.datasets) {
-      let colors = ['rgba(0,255,0,0.75)', 'rgba(255,0,255,0.75)'];
+      let colors = ['#4BC0C0', '#36A2EC'];
       data.datasets.forEach((set, i) => {
         set.backgroundColor = this.setGradiantColor(canvas, colors[i]);
         set.borderColor = "white";
@@ -50,12 +69,28 @@ class Charts extends Component {
           from={{ opacity: 0, marginTop: -500 }}
           to={{ opacity: 1, marginTop: 20 }}>
           {props => <div className="content chart-class" style={props}>
-            <Line
-              options={{
-                response: true
-              }}
-              data={this.getChart}
-            />
+            <Row>
+              <Col span={12}>
+                <Line
+                  options={{
+                    response: true
+                  }}
+                  data={this.getChart}
+                />
+              </Col>
+              <Col span={12}>
+                <Doughnut
+                  options={{ response: true }}
+                  data={this.state.dognutData} />
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <Polar
+                  options={{ response: true }}
+                  data={this.state.polarData} />
+              </Col>
+            </Row>
           </div>
           }
         </Spring>
