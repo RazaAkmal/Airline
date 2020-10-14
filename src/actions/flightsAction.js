@@ -36,6 +36,7 @@ export const fetchFlights = (data, withoutDate) => {
   let date = moment(Date()).format('YYYY-MM-DD')
   return (dispatch) => {
     dispatch({ type: START_LOADING })
+    dispatch(getCordinates())
     globalAxios().get(`apiservices/browseroutes/v1.0/US/USD/en-US/${data.origin}/${data.destination}/${withoutDate ? date : moment(data.date).format('YYYY-MM-DD')}?inboundpartialdate=${!data.oneway ? moment(data.inboundDate).format('YYYY-MM-DD') : ''}`
     ).then(res => {
       dispatch({ type: FETCH_FLIGHTS, payload: res.data })
@@ -49,3 +50,24 @@ export const resetState = () => {
     dispatch({ type: RESET_STATE })
   }
 }
+
+
+export const getCordinates = () => {
+  const options = {
+    method: 'GET',
+    url: 'https://rapidapi.p.rapidapi.com/geocode/v1/json',
+    params: { key: 'OPENCAGE-API-Key', q: 'Berlin', language: 'en' },
+    headers: {
+      'x-rapidapi-host': 'opencage-geocoder.p.rapidapi.com',
+      'x-rapidapi-key': '1fd29b48cfmsha93fa973c10d834p1c553djsn3871a6c7862b'
+    }
+  };
+  return (dispatch) => {
+    Axios.request(options).then(function (response) {
+      console.log(response.data);
+    }).catch(function (error) {
+      console.error(error);
+    });
+  }
+}
+

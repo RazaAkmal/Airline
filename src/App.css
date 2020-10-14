@@ -27,6 +27,11 @@
   margin-top: 20px;
     background-color: rgb(225 225 225 /74%);
     padding: 14px;
+    position: relative;
+}
+
+.map {
+  height: 70vh;
 }
 
 .App-header img{

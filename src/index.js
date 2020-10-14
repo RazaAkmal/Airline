@@ -14,7 +14,7 @@ import {
 import reducers from "./reducers"
 import './i18n'
 import OverLoader from './Components/common/loader';
-
+import 'leaflet/dist/leaflet.css'
 
 const store = createStore(reducers, composeWithDevTools(applyMiddleware(ReduxThunk)))
 

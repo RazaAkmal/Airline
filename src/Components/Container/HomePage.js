@@ -10,6 +10,7 @@ import { Row, Form, Col, Select, Typography, Button, Space, DatePicker, Checkbox
 import isEmpty from 'lodash.isempty';
 import { withTranslation, Trans } from 'react-i18next';
 import { Spring, Transition } from 'react-spring/renderprops'
+import MapComponent from './MapComponent';
 
 
 const formItemLayout = {
@@ -227,23 +228,27 @@ class HomePage extends React.Component {
 
     return (
       <Spring
-        from={{ opacity: 0, marginTop: -500 }}
-        to={{ opacity: 1, marginTop: 20 }}>
+        from={{ opacity: 0, transform: "translate3d(-50%, 0px, 0px)" }}
+        to={{ opacity: 1, transform: "translate3d(0%, 0px, 0px)" }}>
         {props => <div className="content" style={props}>
           {isLoading && <OverLoader />}
-          <Row justify="center">
-            <Col span={12} offset={6} >
+          <div style={{ position: 'absolute', height: places_data ? '55vh' : '30vh', width: '50%', right: 10 }}>
+            <MapComponent />
+          </div>
+          <Row >
+            <Col span={18}  >
               <h1> <Trans i18nKey="title" /></h1>
             </Col>
           </Row>
           <Form {...formItemLayout}>
-            <Row justify="center">
-              <Col span={path === '/international' ? 6 : 12} offset={path !== '/international' && 6}>
-                <Form.Item label={<Trans i18nKey="country" />} labelCol={{ span: 24 }}>
+            <Row >
+              {/* span={path === '/international' ? 6 : 12} offset={path !== '/international' && 6} */}
+              <Col span={20} >
+                <Form.Item labelCol={{ span: 24 }} label={<Trans i18nKey="country" />} >
                   <Select
                     size="large"
                     showSearch
-                    style={{ width: "250px" }}
+                    // style={{ maxWidth: "250px" }}
                     placeholder="Select the Country"
                     optionFilterProp="children"
                     onChange={this.handleCountrySelect}
@@ -256,13 +261,15 @@ class HomePage extends React.Component {
                   </Select>
                 </Form.Item>
               </Col>
-              {path === '/international' &&
-                <Col span={6} >
-                  <Form.Item label={<Trans i18nKey="destinationCountry" />} labelCol={{ span: 24 }}>
+            </Row>
+            {path === '/international' &&
+              <Row>
+                <Col span={20} >
+                  <Form.Item labelCol={{ span: 24 }} label={<Trans i18nKey="destinationCountry" />} >
                     <Select
                       size="large"
                       showSearch
-                      style={{ width: "250px" }}
+                      // style={{ width: "250px" }}
                       placeholder="Select the Destination Country"
                       optionFilterProp="children"
                       onChange={this.handleDestinationCountrySelect}
@@ -274,19 +281,19 @@ class HomePage extends React.Component {
                     </Select>
                   </Form.Item>
                 </Col>
-              }
-            </Row>
+              </Row>
+            }
             {(path !== '/international' || destinationCountry || country === destinationCountry) &&
               places_data &&
-              <Row justify="center">
-                <Col span={6} >
-                  <Form.Item label="Origin" labelCol={{ span: 24 }}
+              <Row>
+                <Col span={20} >
+                  <Form.Item labelCol={{ span: 24 }} label="Origin"
                     help={originError && "Please Select Origin"}
                     validateStatus={originError && "error"}>
                     <Select
                       size="large"
                       showSearch
-                      style={{ width: "250px" }}
+                      // style={{ width: "250px" }}
                       value={origin}
                       placeholder="Select Origin Place"
                       optionFilterProp="children"
@@ -301,15 +308,15 @@ class HomePage extends React.Component {
                     </Select>
                   </Form.Item>
                 </Col>
-                <Col span={6}>
-                  <Form.Item label="Destination"
-                    labelCol={{ span: 24 }}
+                <Col span={20} >
+                  <Form.Item labelCol={{ span: 24 }} label="Destination"
+
                     help={destinationError && "Please Select Destination"}
                     validateStatus={destinationError && "error"}>
                     <Select
                       size="large"
                       showSearch
-                      style={{ width: "250px" }}
+                      // style={{ width: "250px" }}
                       value={destination}
                       placeholder="Select Destination Place"
                       optionFilterProp="children"
@@ -324,54 +331,47 @@ class HomePage extends React.Component {
                     </Select>
                   </Form.Item>
                 </Col>
-                <Col span={6}>
-                  <Form.Item labelCol={{ span: 24 }} label="Departing Date">
-                    <DatePicker size="large"
-                      style={{ width: "250px" }}
-                      allowClear={false}
-                      format={dateFormat}
-                      disabledDate={this.disabledDate}
-                      value={moment(date, dateFormat)}
-                      onChange={this.handleDateChange} />
-                  </Form.Item>
-                </Col>
               </Row>
             }
             {(path !== '/international' || destinationCountry || country === destinationCountry) &&
               places_data &&
-              <Row justify="center">
-                <Col span={18} >
-                  <Checkbox checked={!oneway} onChange={() => this.setState({ oneway: !oneway })}>One Way</Checkbox>
-                </Col>
-                <Transition
-                  native
-                  items={oneway}
-                  from={{ opacity: 0 }}
-                  enter={{ opacity: 1 }}
-                  leave={{ opacity: 0 }}
-                >
-                  {show => show && (props => (
-                    <div style={props}>
-                      <Col span={8} offset={2}>
-                        <Form.Item labelCol={{ span: 24 }} label="Returning Date">
-                          <DatePicker size="large"
-                            style={{ width: "250px" }}
-                            allowClear={false}
-                            format={dateFormat}
-                            disabledDate={this.disabledDate}
-                            value={moment(inboundDate, dateFormat)}
-                            onChange={this.handleInboundDateChange} />
-                        </Form.Item>
-                      </Col>
-                    </div>
-                  ))}
-                </Transition>
-              </Row>
+              <>
+                <Row >
+                  <Col span={20} >
+                    <Checkbox checked={!oneway} onChange={() => this.setState({ oneway: !oneway })}>One Way</Checkbox>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={20} >
+                    <Transition
+                      native
+                      items={oneway}
+                      from={{ opacity: 0 }}
+                      enter={{ opacity: 1 }}
+                      leave={{ opacity: 0 }}
+                    >
+                      {show => show && (props => (
+                        <div style={props}>
+                          <Form.Item labelCol={{ span: 24 }} label="Returning ">
+                            <DatePicker size="large"
+                              // style={{ width: "250px" }}
+                              allowClear={false}
+                              format={dateFormat}
+                              disabledDate={this.disabledDate}
+                              value={moment(inboundDate, dateFormat)}
+                              onChange={this.handleInboundDateChange} />
+                          </Form.Item>
+                        </div>
+                      ))}
+                    </Transition>
+                  </Col>
+                </Row>
+              </>
             }
             {(path !== '/international' || destinationCountry || country === destinationCountry) &&
               places_data &&
-              <Row justify="center" style={{ marginTop: 10 }}>
-                <Col span={12} offset={6}>
+              <Row style={{ marginTop: '10px' }}>
+                <Col span={20} >
                   <Button type="submit" onClick={() => this.handleRouteSubmit(false)} type="primary" >Browse Flights</Button>
                   <Button style={{ marginLeft: "10px" }} type="submit" onClick={() => this.handleRouteSubmit(true)} variant="outlined" color="primary" >Browse Flights Without Date</Button>
                 </Col>
@@ -399,7 +399,6 @@ class HomePage extends React.Component {
 
         }
       </Spring>
-
     )
   }
 }
