@@ -11,6 +11,7 @@ import isEmpty from 'lodash.isempty';
 import { withTranslation, Trans } from 'react-i18next';
 import { Spring, Transition } from 'react-spring/renderprops'
 import MapComponent from './MapComponent';
+import Leaflet from './Leaflet';
 
 
 const formItemLayout = {
@@ -233,7 +234,7 @@ class HomePage extends React.Component {
         {props => <div className="content" style={props}>
           {isLoading && <OverLoader />}
           <div style={{ position: 'absolute', height: places_data ? '55vh' : '30vh', width: '50%', right: 10 }}>
-            <MapComponent />
+            <Leaflet height={places_data ? '55vh' : '30vh'} />
           </div>
           <Row >
             <Col span={18}  >
@@ -243,7 +244,7 @@ class HomePage extends React.Component {
           <Form {...formItemLayout}>
             <Row >
               {/* span={path === '/international' ? 6 : 12} offset={path !== '/international' && 6} */}
-              <Col span={20} >
+              <Col span={15} >
                 <Form.Item labelCol={{ span: 24 }} label={<Trans i18nKey="country" />} >
                   <Select
                     size="large"
@@ -264,7 +265,7 @@ class HomePage extends React.Component {
             </Row>
             {path === '/international' &&
               <Row>
-                <Col span={20} >
+                <Col span={15} >
                   <Form.Item labelCol={{ span: 24 }} label={<Trans i18nKey="destinationCountry" />} >
                     <Select
                       size="large"
@@ -286,7 +287,7 @@ class HomePage extends React.Component {
             {(path !== '/international' || destinationCountry || country === destinationCountry) &&
               places_data &&
               <Row>
-                <Col span={20} >
+                <Col span={15} >
                   <Form.Item labelCol={{ span: 24 }} label="Origin"
                     help={originError && "Please Select Origin"}
                     validateStatus={originError && "error"}>
@@ -308,7 +309,7 @@ class HomePage extends React.Component {
                     </Select>
                   </Form.Item>
                 </Col>
-                <Col span={20} >
+                <Col span={15} >
                   <Form.Item labelCol={{ span: 24 }} label="Destination"
 
                     help={destinationError && "Please Select Destination"}
@@ -337,12 +338,12 @@ class HomePage extends React.Component {
               places_data &&
               <>
                 <Row >
-                  <Col span={20} >
+                  <Col span={15} >
                     <Checkbox checked={!oneway} onChange={() => this.setState({ oneway: !oneway })}>One Way</Checkbox>
                   </Col>
                 </Row>
                 <Row>
-                  <Col span={20} >
+                  <Col span={15} >
                     <Transition
                       native
                       items={oneway}
@@ -371,7 +372,7 @@ class HomePage extends React.Component {
             {(path !== '/international' || destinationCountry || country === destinationCountry) &&
               places_data &&
               <Row style={{ marginTop: '10px' }}>
-                <Col span={20} >
+                <Col span={15} >
                   <Button type="submit" onClick={() => this.handleRouteSubmit(false)} type="primary" >Browse Flights</Button>
                   <Button style={{ marginLeft: "10px" }} type="submit" onClick={() => this.handleRouteSubmit(true)} variant="outlined" color="primary" >Browse Flights Without Date</Button>
                 </Col>
