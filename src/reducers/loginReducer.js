@@ -1,4 +1,4 @@
-import { LOGIN_USER, START_LOGIN_LOADING, WRONG_CREDENTIAL, REMOVE_ERROR } from "../constants"
+import { LOGIN_USER, START_LOGIN_LOADING, WRONG_CREDENTIAL,STOP_LOGIN_LOADING, REMOVE_ERROR } from "../constants"
 
 const INITIAL_STATE = {
   loading: false,
@@ -11,6 +11,11 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         loading: true
+      }
+    case STOP_LOGIN_LOADING:
+      return {
+        ...state,
+        loading: false
       }
     case WRONG_CREDENTIAL:
       return {

@@ -11,6 +11,7 @@
     "antd": "^4.6.3",
     "axios": "^0.20.0",
     "chart.js": "^2.9.3",
+    "firebase": "^7.23.0",
     "google-maps-react": "^2.0.6",
     "i18next": "^19.7.0",
     "i18next-browser-languagedetector": "^6.0.1",

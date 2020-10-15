@@ -18,12 +18,12 @@ import Charts from './Components/Charts';
 import HomePage from './Components/Container/HomePage';
 import { useTranslation } from 'react-i18next'
 import ReactGA from 'react-ga';
-
+import fire from './config/firebase'
 
 
 function App() {
-  const islogin = localStorage.getItem('login');
-  const login = useSelector(state => state.login)
+  // const islogin = localStorage.getItem('login');
+  // const login = useSelector(state => state.login)
   const { Header, Content, Sider } = Layout;
   const path = window.location.pathname
   const height = useWindowWidth()
@@ -40,6 +40,27 @@ function App() {
     ReactGA.pageview(window.location.pathname + window.location.search)
   }, [])
 
+
+  const [user, setUser] = useState('') 
+
+  const authListner = () => {
+    fire.auth().onAuthStateChanged(user => {
+      if (user) {
+        setUser(user)
+      } else {
+        setUser('')
+      }
+    })
+  }
+
+  useEffect(() => {
+    authListner()
+  },[])
+
+  const handleLogout = () => {
+    fire.auth().signOut();
+  }
+
   return (
     <Layout>
       <Header className="header" style={{ position: 'fixed', zIndex: 1, width: '100%', }}>
@@ -47,7 +68,7 @@ function App() {
           <Col span={4}>
             <h1 style={{ color: "white" }}>Airline</h1>
           </Col>
-          {(login.isLoggedIn || islogin) &&
+          {(user) &&
             <Fragment>
               <Col span={14}>
                 <Menu theme="dark" style={{ height: "64px" }} mode="horizontal" defaultSelectedKeys={(path === "/charts" && ['4']) || (path === "/international" && ['2']) ||
@@ -72,9 +93,10 @@ function App() {
                 }}>DE</Button>
               </Col>
               <Col span={2}>
-                <Button type="link" onClick={() => {
-                  localStorage.removeItem("login")
-                  window.location.reload()
+              <Button type="link" onClick={() => {
+                handleLogout()
+                  // localStorage.removeItem("login")
+                  // window.location.reload()
                 }}>{t('logout')}</Button>
               </Col>
             </Fragment>
@@ -90,7 +112,7 @@ function App() {
           backgroundSize: "cover",
         }}
       >
-        {(login.isLoggedIn || islogin) ?
+        {(user) ?
           <div>
             <Switch>
               <Route path="/international">

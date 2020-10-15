@@ -1,115 +1,243 @@
-import React from 'react'
-import OverLoader from './common/loader'
-import '../App.css'
-import { login_user, removeError } from '../actions';
-import { connect } from 'react-redux'
-import {
-  UserOutlined,
-  KeyOutlined
-} from '@ant-design/icons';
-import { Form, Input, Button, Card } from 'antd';
+/* eslint-disable default-case */
+import React from "react";
+import OverLoader from "./common/loader";
+import "../App.css";
+import { login_user, removeError, stopLoading } from "../actions";
+import { connect } from "react-redux";
+import { UserOutlined, KeyOutlined } from "@ant-design/icons";
+import { Form, Input, Button, Card, Row, Col, Result } from "antd";
+
+import fire from "../config/firebase";
 
 const layout = {
   labelCol: {
-    span: 8,
+    span: 24,
+    offset: 5,
   },
   wrapperCol: {
-    span: 8,
+    span: 15,
+    offset: 5,
   },
 };
 const tailLayout = {
   wrapperCol: {
-    offset: 3,
-    span: 12,
+    offset: 4,
+    span: 5,
   },
 };
 
-
-
-
 class LoginPage extends React.Component {
-
   state = {
-    username: '',
-    password: '',
+    username: "",
+    password: "",
     passwordError: false,
-    usernameError: false
-  }
+    usernameError: false,
+    errorUser: "",
+    networkError: false,
+    errorPassword: "",
+    hasAccount: true,
+  };
 
   handleSubmit = () => {
-    const { login_user } = this.props;
+    const { login_user, stopLoading } = this.props;
     const { username, password } = this.state;
-    if ((username && password) !== '')
-      login_user(username, password);
-    else
-      if (password === '' && username === '')
-        this.setState({ passwordError: true, usernameError: true })
-      else if (username === '')
-        this.setState({ usernameError: true });
-      else if (password === "")
-        this.setState({ passwordError: true });
-  }
+    // if ((username && password) !== '')
+    //   login_user(username, password);
+    // else
+    //   if (password === '' && username === '')
+    //     this.setState({ passwordError: true, usernameError: true })
+    //   else if (username === '')
+    //     this.setState({ usernameError: true });
+    //   else if (password === "")
+    //     this.setState({ passwordError: true });
+    login_user();
+    fire
+      .auth()
+      .signInWithEmailAndPassword(username, password)
+      .then((res) => {
+        stopLoading();
+      })
+      .catch((err) => {
+        switch (err.code) {
+          case "auth/invalid-email":
+          case "auth/user-dsiabled":
+          case "auth/user-not-found":
+            this.setState({ errorUser: err.message, usernameError: true });
+            stopLoading();
+
+            break;
+          case "auth/wrong-password":
+            this.setState({ errorPassword: err.message, passwordError: true });
+            stopLoading();
+
+            break;
+          case "auth/network-request-failed":
+            stopLoading();
+            this.setState({ networkError: true });
+            break;
+        }
+      });
+  };
+
+  handleSignUp = () => {
+    const { username, password } = this.state;
+    this.props.login_user();
+    fire
+      .auth()
+      .createUserWithEmailAndPassword(username, password)
+      .then((res) => {
+        this.props.stopLoading();
+      })
+      .catch((err) => {
+        switch (err.code) {
+          case "auth/email-already-in-use":
+          case "auth/invalid-email":
+            this.setState({ errorUser: err.message, usernameError: true });
+            this.props.stopLoading();
+
+            break;
+          case "auth/weak-password":
+            this.setState({ errorPassword: err.message, passwordError: true });
+            this.props.stopLoading();
+
+            break;
+          case "auth/network-request-failed":
+            stopLoading();
+            this.setState({ networkError: true });
+            break;
+        }
+      });
+  };
 
   render() {
-    const { isLoading, credential_error, removeError } = this.props
-
+    const { isLoading, credential_error, removeError } = this.props;
     return (
-      <div className="site-card-border-less-wrapper flex-center" >
+      <div className="site-card-border-less-wrapper flex-center">
         {isLoading && <OverLoader />}
-        <Card title="Welcome To Airline" style={{ minWidth: 700 }}>
-          <Form
-            {...layout}
-            name="basic"
-          >
-            <Form.Item
-              label="Username"
-              name="username"
-              help={this.state.usernameError && "Please input your username!"}
-              validateStatus={this.state.usernameError && "error"}
-            >
-              <Input prefix={<UserOutlined />} value={this.state.username} onChange={(e) => {
-                this.setState({ username: e.target.value, usernameError: false })
-              }} />
-            </Form.Item>
+        {this.state.networkError ? (
+          <Result
+            status="500"
+            title="No Internet"
+            subTitle="There is no internet connection, Please Connect to the internet"
+            extra={
+              <Button
+                type="primary"
+                onClick={() => this.setState({ networkError: false })}
+              >
+                Back Home
+              </Button>
+            }
+          />
+        ) : (
+          <Card title="Welcome To Airline" style={{ minWidth: 700 }}>
+            <Form {...layout} name="basic">
+              <Form.Item
+                label="Email"
+                name="username"
+                help={this.state.usernameError && this.state.errorUser}
+                validateStatus={this.state.usernameError && "error"}
+              >
+                <Input
+                  prefix={<UserOutlined />}
+                  value={this.state.username}
+                  onChange={(e) => {
+                    this.setState({
+                      username: e.target.value,
+                      usernameError: false,
+                    });
+                  }}
+                />
+              </Form.Item>
 
-            <Form.Item
-              label="Password"
-              name="password"
-              help={credential_error ? "User with Entered Password Doesn't Exist" : this.state.passwordError && "Please input your password!"}
-              validateStatus={(credential_error || this.state.passwordError) && "error"}
-            >
-              <Input.Password prefix={<KeyOutlined />} value={this.state.password} onChange={(e) => {
-                this.setState({ password: e.target.value, passwordError: false })
-                if (credential_error)
-                  removeError()
-              }} />
-            </Form.Item>
-            <Form.Item {...tailLayout}>
-              <Button onClick={this.handleSubmit} type="primary" >
-                Submit
-        </Button>
-            </Form.Item>
-          </Form>
-        </Card>
+              <Form.Item
+                label="Password"
+                name="password"
+                help={this.state.passwordError && this.state.errorPassword}
+                validateStatus={
+                  (credential_error || this.state.passwordError) && "error"
+                }
+              >
+                <Input.Password
+                  prefix={<KeyOutlined />}
+                  value={this.state.password}
+                  onChange={(e) => {
+                    this.setState({
+                      password: e.target.value,
+                      passwordError: false,
+                    });
+                    if (credential_error) removeError();
+                  }}
+                />
+              </Form.Item>
+              <Form.Item>
+                {this.state.hasAccount ? (
+                  <Row>
+                    <Col>
+                      <Button onClick={this.handleSubmit} type="primary">
+                        Sign In
+                      </Button>
+                    </Col>
+                    <Col>
+                      <p style={{ margin: "5px" }}>
+                        Dont Have an account ?{" "}
+                        <a
+                          href="/"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            this.setState({ hasAccount: false });
+                          }}
+                        >
+                          Sign Up
+                        </a>
+                      </p>
+                    </Col>
+                  </Row>
+                ) : (
+                  <Row>
+                    <Col>
+                      <Button onClick={this.handleSignUp} type="primary">
+                        Sign Up
+                      </Button>
+                    </Col>
+                    <Col>
+                      <p style={{ margin: "5px" }}>
+                        Have an account ?{" "}
+                        <a
+                          href="/"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            this.setState({ hasAccount: true });
+                          }}
+                        >
+                          Sign In
+                        </a>
+                      </p>
+                    </Col>
+                  </Row>
+                )}
+              </Form.Item>
+            </Form>
+          </Card>
+        )}
       </div>
-
-    )
+    );
   }
 }
 
 const mapStateToProps = ({ login }) => {
   return {
     isLoading: login.loading,
-    credential_error: login.credential_error
-  }
-}
+    credential_error: login.credential_error,
+  };
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    login_user: (username, password) => dispatch(login_user(username, password)),
-    removeError: () => dispatch(removeError())
-  }
-}
-
+    login_user: (username, password) =>
+      dispatch(login_user(username, password)),
+    removeError: () => dispatch(removeError()),
+    stopLoading: () => dispatch(stopLoading()),
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);
