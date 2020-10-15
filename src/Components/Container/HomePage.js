@@ -234,7 +234,7 @@ class HomePage extends React.Component {
         {props => <div className="content" style={props}>
           {isLoading && <OverLoader />}
           <div style={{ position: 'absolute', height: places_data ? '55vh' : '30vh', width: '50%', right: 10 }}>
-            <Leaflet height={places_data ? '55vh' : '30vh'} />
+            <Leaflet height={places_data ? '55vh' : '25vh'} />
           </div>
           <Row >
             <Col span={18}  >
