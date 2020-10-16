@@ -19,7 +19,7 @@ import HomePage from './Components/Container/HomePage';
 import { useTranslation } from 'react-i18next'
 import ReactGA from 'react-ga';
 import fire from './config/firebase'
-
+import firebase from 'firebase'
 
 function App() {
   // const islogin = localStorage.getItem('login');
@@ -59,6 +59,7 @@ function App() {
 
   const handleLogout = () => {
     fire.auth().signOut();
+    firebase.auth().signOut()
   }
 
   return (

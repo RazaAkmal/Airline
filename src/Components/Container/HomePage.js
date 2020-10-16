@@ -31,6 +31,7 @@ const dateFormat = 'YYYY-MM-DD';
 class HomePage extends React.Component {
 
   state = {
+    isLocationChange: false,
     selectedFlights: [],
     country: '',
     destinationCountry: '',
@@ -141,7 +142,7 @@ class HomePage extends React.Component {
     } else {
       places_data.forEach(element => {
         if (element.PlaceId === val) {
-          this.setState({ originName: element.PlaceName, destination: val, destinationError: false })
+          this.setState({ destinationName: element.PlaceName, destination: val, destinationError: false })
         }
       });
     }
@@ -159,10 +160,10 @@ class HomePage extends React.Component {
     const data = this.state
     if (data.origin !== '' && data.destination !== '') {
       if (noDate) {
-        this.setState({ withoutDate: true, selectedFlights: [], rowKey: [] })
+        this.setState({ withoutDate: true, isLocationChange: !data.isLocationChange, selectedFlights: [], rowKey: [] })
         this.props.fetchFlights(data, true)
       } else {
-        this.setState({ withoutDate: false, selectedFlights: [], rowKey: [] })
+        this.setState({ withoutDate: false, isLocationChange: !data.isLocationChange,  selectedFlights: [], rowKey: [] })
         this.props.fetchFlights(data, false)
       }
     } else if (data.origin === '' && data.destination === '') {
@@ -222,7 +223,7 @@ class HomePage extends React.Component {
 
   render() {
     const { places_data, isLoading, flightList, error, place_error, countries_data, internationa_places_data } = this.props
-    const { selectedFlights, rowKey, flightsData, inboundDate, datacheck, origin, destination, country, destinationCountry, date, withoutDate, originError, destinationError, destinationName, originName, oneway } = this.state
+    const { isLocationChange, rowKey, flightsData, inboundDate, datacheck, origin, destination, country, destinationCountry, date, withoutDate, originError, destinationError, destinationName, originName, oneway } = this.state
     const { Option } = Select;
     const { Title } = Typography;
     const path = window.location.pathname
@@ -234,7 +235,7 @@ class HomePage extends React.Component {
         {props => <div className="content" style={props}>
           {isLoading && <OverLoader />}
           <div style={{ position: 'absolute', height: places_data ? '55vh' : '30vh', width: '50%', right: 10 }}>
-            <Leaflet height={places_data ? '55vh' : '25vh'} />
+            <Leaflet height={(path !== '/international' &&  places_data) ? '55vh' : (path === '/international' &&  internationa_places_data && places_data) ? '55vh': '25vh'} />
           </div>
           <Row >
             <Col span={18}  >
@@ -373,7 +374,7 @@ class HomePage extends React.Component {
               places_data &&
               <Row style={{ marginTop: '10px' }}>
                 <Col span={15} >
-                  <Button type="submit" onClick={() => this.handleRouteSubmit(false)} type="primary" >Browse Flights</Button>
+                  <Button  onClick={() => this.handleRouteSubmit(false)} type="primary" >Browse Flights</Button>
                   <Button style={{ marginLeft: "10px" }} type="submit" onClick={() => this.handleRouteSubmit(true)} variant="outlined" color="primary" >Browse Flights Without Date</Button>
                 </Col>
               </Row>
@@ -384,9 +385,9 @@ class HomePage extends React.Component {
           {
             flightList &&
             <Fragment>
-              <FlightList handlSelectedFlights={this.handlSelectedFlights} rowKey={rowKey} flightList={flightsData} datacheck={datacheck} withoutDate={withoutDate} origin={originName} destination={destinationName} />
+              <FlightList isLocationChange={isLocationChange} handlSelectedFlights={this.handlSelectedFlights} rowKey={rowKey} flightList={flightsData} datacheck={datacheck} withoutDate={withoutDate} origin={originName} destination={destinationName} />
               {!(datacheck === 0 || isEmpty(flightList)) &&
-                <Button type="submit" onClick={this.handleBookFlight} type="primary" >Book Flights</Button>
+                <Button onClick={this.handleBookFlight} type="primary" >Book Flights</Button>
               }
             </Fragment>
           }

@@ -6,7 +6,7 @@ import { login_user, removeError, stopLoading } from "../actions";
 import { connect } from "react-redux";
 import { UserOutlined, KeyOutlined } from "@ant-design/icons";
 import { Form, Input, Button, Card, Row, Col, Result } from "antd";
-
+import firebase from "firebase"
 import fire from "../config/firebase";
 
 const layout = {
@@ -78,6 +78,20 @@ class LoginPage extends React.Component {
         }
       });
   };
+
+  handleGoogleSubmit = () => {
+const provider = new firebase.auth.GoogleAuthProvider();
+    fire.auth().signInWithPopup(provider).then(function(result) {
+  const token = result.credential.accessToken;
+  const user = result.user;
+    }).catch(function (error) {
+  console.log(error);
+  const errorCode = error.code;
+  const errorMessage = error.message;
+  const email = error.email;
+  const credential = error.credential;
+});
+  }
 
   handleSignUp = () => {
     const { username, password } = this.state;
@@ -187,7 +201,16 @@ class LoginPage extends React.Component {
                             this.setState({ hasAccount: false });
                           }}
                         >
-                          Sign Up
+                            Sign Up
+                        </a>
+                           {" "} or Sign In Via  <a
+                          href="/"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            this.handleGoogleSubmit();
+                          }}
+                        >
+                              Google
                         </a>
                       </p>
                     </Col>
@@ -209,7 +232,16 @@ class LoginPage extends React.Component {
                             this.setState({ hasAccount: true });
                           }}
                         >
-                          Sign In
+                         Sign In{" "}
+                        </a>
+                             or Sign In Via  <a
+                          href="/"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            this.handleGoogleSubmit();
+                          }}
+                        >
+                              Google
                         </a>
                       </p>
                     </Col>

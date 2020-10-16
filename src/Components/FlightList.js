@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import isEmpty from 'lodash.isempty';
 import { Table, Button, Row, Col } from 'antd';
 
@@ -55,14 +55,22 @@ export default function FlightList(props) {
     },
   };
 
+    const [origin, setOrigin] = useState('');
+    const [destination, setDestination] = useState('');
+
+  useEffect(() => {
+    setOrigin(props.origin)
+    setDestination(props.destination)
+  }, [props.isLocationChange]);
+
   return (
     <div>
       {!isEmpty(props.flightList) &&
         <div>
-          <Row justify="center">
+        <Row justify="center">
             <Col span={12}>
               <p className="content-header__section">Results</p>
-              <h1 className="content-header">Flight Schedule For {props.origin} to {props.destination}</h1>
+              <h1 className="content-header">Flight Schedule For {origin} to {destination}</h1>
               <h3 className="content-header">{props.withoutDate ? "From" : "On"} {props.flightList[0].date} </h3>
             </Col>
           </Row>
