@@ -422,7 +422,7 @@ class HomePage extends React.Component {
                 <Fragment>
                   <FlightList isLocationChange={isLocationChange} handlSelectedFlights={this.handlSelectedFlights} rowKey={rowKey} flightList={flightsData} datacheck={datacheck} withoutDate={withoutDate} origin={originName} destination={destinationName} />
                   {!(datacheck === 0 || isEmpty(flightList)) &&
-                    <Button onClick={this.handleBookFlight} type="primary" >Book Flights</Button>
+                    <Button onClick={this.handleBookFlight} type="primary" >Book Flight</Button>
                   }
                 </Fragment>
               }
