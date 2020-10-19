@@ -1,4 +1,4 @@
-import { LOGIN_USER, START_LOGIN_LOADING, WRONG_CREDENTIAL,STOP_LOGIN_LOADING, REMOVE_ERROR } from "../constants"
+import { LOGIN_USER,USER_INFO, START_LOGIN_LOADING, WRONG_CREDENTIAL,STOP_LOGIN_LOADING, REMOVE_ERROR } from "../constants"
 
 const INITIAL_STATE = {
   loading: false,
@@ -7,6 +7,12 @@ const INITIAL_STATE = {
 }
 export default function (state = INITIAL_STATE, action) {
   switch (action.type) {
+    case USER_INFO:
+      return {
+        ...state,
+        user: action.payload,
+        loading: false
+      }
     case START_LOGIN_LOADING:
       return {
         ...state,

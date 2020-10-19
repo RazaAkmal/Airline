@@ -1,19 +1,9 @@
 
-import { START_LOGIN_LOADING,STOP_LOGIN_LOADING, LOGIN_USER, WRONG_CREDENTIAL, REMOVE_ERROR } from '../constants'
+import { START_LOGIN_LOADING,STOP_LOGIN_LOADING, REMOVE_ERROR } from '../constants'
 
-export const login_user = (username, password) => {
+export const login_user = () => {
   return (dispatch) => {
     dispatch({ type: START_LOGIN_LOADING })
-    // if (username === "admin" && password === "admin") {
-    //   setTimeout(() => {
-    //     dispatch({ type: LOGIN_USER })
-    //     localStorage.setItem('login', true)
-    //   }, 2000)
-    // } else {
-    //   setTimeout(() => {
-    //     dispatch({ type: WRONG_CREDENTIAL })
-    //   }, 2000)
-    // }
   }
 }
 

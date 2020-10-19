@@ -4,6 +4,7 @@ export const START_LOGIN_LOADING = 'start_login_loading'
 export const STOP_LOGIN_LOADING = 'stop_login_loading'
 export const WRONG_CREDENTIAL = 'wrong_credential'
 export const LOGIN_USER = 'login_user'
+export const USER_INFO = 'user_info'
 
 export const START_LOADING = 'start_loading'
 export const STOP_LOADING = 'stop_loading'

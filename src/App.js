@@ -1,8 +1,8 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import logo from './logo.png';
+import {USER_INFO} from './constants'
 import './App.css';
 import LoginPage from './Components/LoginPage'
-import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import 'antd/dist/antd.css';
 import {
   Route,
@@ -24,7 +24,9 @@ import firebase from 'firebase'
 function App() {
   // const islogin = localStorage.getItem('login');
   // const login = useSelector(state => state.login)
-  const { Header, Content, Sider } = Layout;
+  const { Header, Content } = Layout;
+ const dispatch = useDispatch()
+
   const path = window.location.pathname
   const height = useWindowWidth()
   const { t, i18n } = useTranslation()
@@ -46,6 +48,7 @@ function App() {
   const authListner = () => {
     fire.auth().onAuthStateChanged(user => {
       if (user) {
+        dispatch({ type: USER_INFO, payload: user})
         setUser(user)
       } else {
         setUser('')

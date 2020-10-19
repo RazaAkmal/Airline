@@ -41,15 +41,6 @@ class LoginPage extends React.Component {
   handleSubmit = () => {
     const { login_user, stopLoading } = this.props;
     const { username, password } = this.state;
-    // if ((username && password) !== '')
-    //   login_user(username, password);
-    // else
-    //   if (password === '' && username === '')
-    //     this.setState({ passwordError: true, usernameError: true })
-    //   else if (username === '')
-    //     this.setState({ usernameError: true });
-    //   else if (password === "")
-    //     this.setState({ passwordError: true });
     login_user();
     fire
       .auth()
@@ -265,8 +256,7 @@ const mapStateToProps = ({ login }) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    login_user: (username, password) =>
-      dispatch(login_user(username, password)),
+    login_user: () => dispatch(login_user()),
     removeError: () => dispatch(removeError()),
     stopLoading: () => dispatch(stopLoading()),
   };
