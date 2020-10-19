@@ -22,8 +22,6 @@ import fire from './config/firebase'
 import firebase from 'firebase'
 
 function App() {
-  // const islogin = localStorage.getItem('login');
-  // const login = useSelector(state => state.login)
   const { Header, Content } = Layout;
  const dispatch = useDispatch()
 
@@ -99,8 +97,6 @@ function App() {
               <Col span={2}>
               <Button type="link" onClick={() => {
                 handleLogout()
-                  // localStorage.removeItem("login")
-                  // window.location.reload()
                 }}>{t('logout')}</Button>
               </Col>
             </Fragment>
