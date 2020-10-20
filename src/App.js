@@ -20,6 +20,9 @@ import { useTranslation } from 'react-i18next'
 import ReactGA from 'react-ga';
 import fire from './config/firebase'
 import firebase from 'firebase'
+import ForgotPassword from './Components/ForgotPassword';
+
+
 
 function App() {
   const { Header, Content } = Layout;
@@ -56,7 +59,7 @@ function App() {
 
   useEffect(() => {
     authListner()
-  },[])
+  })
 
   const handleLogout = () => {
     fire.auth().signOut();
@@ -132,7 +135,14 @@ function App() {
               </Route>
             </Switch>
           </div>
-          : <LoginPage />}
+          :
+          <div>
+            <Switch>
+            <Route exact path="/forgotPassword"><ForgotPassword/></Route>
+            <LoginPage />
+            </Switch>
+          </div>
+        }
       </Content>
     </Layout>
   );

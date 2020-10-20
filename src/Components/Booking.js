@@ -50,8 +50,8 @@ const columns = [
 
 const customizeRenderEmpty = () => (
   <div style={{ textAlign: 'center' }}>
-    <img src="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
-      imageStyle={{
+    <img alt='No Data img' src="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+      imagestyle={{
         height: 60,
       }} />
     <p style={{ color: "rgba(0, 0, 0, 0.85)" }}>No Flights Booked Yet!</p>
@@ -79,7 +79,6 @@ class Booking extends Component{
 
 
   render() {
-
     return (
       <ConfigProvider renderEmpty={customizeRenderEmpty}>
         <div className="content">

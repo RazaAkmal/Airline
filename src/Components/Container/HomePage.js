@@ -6,11 +6,11 @@ import Countries from '../common/countries.json'
 import OverLoader from '../common/loader';
 import FlightList from '../FlightList';
 import moment from 'moment'
-import { Row, Form, Col, Select, Typography, Button, Space, DatePicker, Checkbox, Modal } from 'antd';
+import { Row, Form, Col, Select, Button,DatePicker, Checkbox, Modal } from 'antd';
 import isEmpty from 'lodash.isempty';
 import { withTranslation, Trans } from 'react-i18next';
 import { Spring, Transition } from 'react-spring/renderprops'
-import MapComponent from './MapComponent';
+// import MapComponent from './MapComponent';
 import Leaflet from './Leaflet';
 import fire from '../../config/firebase'
 
@@ -73,7 +73,7 @@ class HomePage extends React.Component {
     if (nextProps.flightList !== flightList) {
       if (nextProps.flightList)
         if (!isEmpty(nextProps.flightList.Quotes)) {
-          nextProps.flightList.Quotes.map((quote, index) => {
+          nextProps.flightList.Quotes.forEach((quote, index) => {
             if (moment(quote.OutboundLeg.DepartureDate).format("YYYY-MM-DD") === date || withoutDate === true) {
               check++
               let fromData = nextProps.flightList.Places && nextProps.flightList.Places.map(places => {
@@ -93,8 +93,8 @@ class HomePage extends React.Component {
                 return quote.OutboundLeg.CarrierIds.map(id => {
                   if (carrier.CarrierId === id)
                     return carrier.Name
+                 return false
                 })
-                return false
               })
 
               datasource.push({
@@ -227,7 +227,8 @@ class HomePage extends React.Component {
             to: selectedFlights[0].to[0],
             direct: selectedFlights[0].direct,
             carriers: carriers,
-            price: selectedFlights[0].price
+            price: selectedFlights[0].price,
+            key: selectedFlights[0].key
           }).then(res => {
             Modal.success({
               content: 'Your Flight Has been Booked Successfully.',
@@ -242,7 +243,8 @@ class HomePage extends React.Component {
             to: selectedFlights[0].to[0],
             direct: selectedFlights[0].direct,
             carriers: carriers,
-            price: selectedFlights[0].price
+            price: selectedFlights[0].price,
+            key: selectedFlights[0].key
           }).then(res => {
             Modal.success({
               content: 'Your Flight Has been Booked Successfully.',
@@ -257,10 +259,9 @@ class HomePage extends React.Component {
       }
 
       render() {
-        const { places_data, isLoading, flightList, error, place_error, countries_data, internationa_places_data } = this.props
-        const { isLocationChange, rowKey, flightsData, inboundDate, datacheck, origin, destination, country, destinationCountry, date, withoutDate, originError, destinationError, destinationName, originName, oneway } = this.state
+        const { places_data, isLoading, flightList, error,internationa_places_data } = this.props
+        const { isLocationChange, rowKey, flightsData, inboundDate, datacheck, origin, destination, country, destinationCountry,  withoutDate, originError, destinationError, destinationName, originName, oneway } = this.state
         const { Option } = Select;
-        const { Title } = Typography;
         const path = window.location.pathname
 
         return (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import isEmpty from 'lodash.isempty';
-import { Table, Button, Row, Col } from 'antd';
+import { Table, Row, Col } from 'antd';
 
 
 const columns = [
