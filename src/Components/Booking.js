@@ -1,16 +1,15 @@
-import React, { Component }from 'react'
+import React, { Component } from 'react'
 import '../App.css'
-import { Table, Button, Row, Col, ConfigProvider } from 'antd';
+import { Table, Button, Row, Col, ConfigProvider, Modal } from 'antd';
 import { Link } from 'react-router-dom'
 import { Trans } from 'react-i18next';
 import fire from '../config/firebase'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 
 const columns = [
   {
     title: 'Departure Date',
     dataIndex: 'date',
-    key: 'date',
     sorter: {
       compare: (a, b) => new Date(a.date) - new Date(b.date),
     },
@@ -18,17 +17,14 @@ const columns = [
   {
     title: 'Flight From',
     dataIndex: 'from',
-    key: 'from',
   },
   {
     title: 'Fligh To',
     dataIndex: 'to',
-    key: 'to',
   },
   {
     title: 'Direct Flight',
     dataIndex: 'direct',
-    key: 'direct',
     sorter: {
       compare: (a, b) => a.direct.length - b.direct.length,
     },
@@ -36,12 +32,10 @@ const columns = [
   {
     title: 'Carriers',
     dataIndex: 'carriers',
-    key: 'carriers',
   },
   {
     title: 'Ticket Price',
     dataIndex: 'price',
-    key: 'price',
     sorter: {
       compare: (a, b) => Number(a.price.slice(1)) - Number(b.price.slice(1)),
     },
@@ -59,26 +53,49 @@ const customizeRenderEmpty = () => (
   </div>
 );
 
-class Booking extends Component{
+class Booking extends Component {
 
   state = {
-    selectedFlights: ''
+    selectedFlights: '',
+    dataKeys: '',
+    selectedRow: ''
   }
 
   componentDidMount = () => {
-    const {user} = this.props
-    const rootRef = fire.database().ref().child('bookings/'+ user.uid )
+    const { user } = this.props
+    const rootRef = fire.database().ref().child('bookings/' + user.uid)
     rootRef.orderByKey().on('value', snap => {
       let data = snap.val()
       if (data !== null) {
+        let flightsDataKeys = Object.keys(data)
         let flightsData = Object.values(data)
-        this.setState({ selectedFlights: flightsData })
+        flightsData.forEach((element, index) => {
+          element.key = index
+        })
+        this.setState({ selectedFlights: flightsData, dataKeys: flightsDataKeys })
       }
     })
   }
 
+  handleCancelFlight = () => {
+    const { selectedRow, dataKeys } = this.state
+    const { user } = this.props
+
+    fire.database().ref(`bookings/${user.uid}/${dataKeys[selectedRow]}`).remove().then(res => {
+      Modal.success({
+        content: 'Your Flight Has been Cancelled Successfully.',
+      });
+    })
+      .catch((err) => {
+        Modal.error({
+          content: 'Something went wrong!',
+        });
+      })
+  }
+
 
   render() {
+
     return (
       <ConfigProvider renderEmpty={customizeRenderEmpty}>
         <div className="content">
@@ -89,9 +106,15 @@ class Booking extends Component{
           </Row>
           <Row>
             <Col span={24}>
-              <Table columns={columns} dataSource={this.state.selectedFlights} />
+              <Table columns={columns} dataSource={this.state.selectedFlights} rowSelection={{
+                type: "radio",
+                onChange: (selectedRowKeys, selectedRows) => {
+                  this.setState({ selectedRow: selectedRowKeys })
+                },
+              }} />
             </Col>
           </Row>
+          <Button onClick={this.handleCancelFlight} type="primary" >Cancel Flight</Button>
         </div>
       </ConfigProvider>
     )

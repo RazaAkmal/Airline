@@ -33,11 +33,11 @@ export const fetchPlaces = (country, type) => {
   }
 }
 export const fetchFlights = (data, withoutDate) => {
-  let date = moment(Date()).format('YYYY-MM-DD')
+  let date = moment(new Date()).format('YYYY-MM-DD')
   return (dispatch) => {
     dispatch({ type: START_LOADING })
     // dispatch(getCordinates())
-    globalAxios().get(`apiservices/browseroutes/v1.0/US/USD/en-US/${data.origin}/${data.destination}/${withoutDate ? date : moment(data.date).format('YYYY-MM-DD')}?inboundpartialdate=${!data.oneway ? moment(data.inboundDate).format('YYYY-MM-DD') : ''}`
+    globalAxios().get(`apiservices/browseroutes/v1.0/US/USD/en-US/${data.origin}/${data.destination}/${withoutDate ? date : moment(data.date).format('YYYY-MM-DD')}?inboundpartialdate=${data.oneway ? moment(data.inboundDate).format('YYYY-MM-DD') : ''}`
     ).then(res => {
       dispatch({ type: FETCH_FLIGHTS, payload: res.data })
     }).catch(error => {

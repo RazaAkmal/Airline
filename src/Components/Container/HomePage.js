@@ -6,7 +6,7 @@ import Countries from '../common/countries.json'
 import OverLoader from '../common/loader';
 import FlightList from '../FlightList';
 import moment from 'moment'
-import { Row, Form, Col, Select, Button,DatePicker, Checkbox, Modal } from 'antd';
+import { Row, Form, Col, Select, Button, DatePicker, Checkbox, Modal } from 'antd';
 import isEmpty from 'lodash.isempty';
 import { withTranslation, Trans } from 'react-i18next';
 import { Spring, Transition } from 'react-spring/renderprops'
@@ -37,7 +37,7 @@ class HomePage extends React.Component {
     destinationCountry: '',
     destination: '',
     origin: '',
-    date: moment(Date()).format('YYYY-MM-DD'),
+    date: moment(new Date()).format('YYYY-MM-DD'),
     withoutDate: false,
     originError: false,
     destinationError: false,
@@ -46,7 +46,7 @@ class HomePage extends React.Component {
     destinationName: '',
     originName: '',
     oneway: false,
-    inboundDate: moment(Date()).format('YYYY-MM-DD'),
+    inboundDate: moment(new Date()).format('YYYY-MM-DD'),
     rowKey: [],
     bookedflights: null
   }
@@ -74,7 +74,7 @@ class HomePage extends React.Component {
       if (nextProps.flightList)
         if (!isEmpty(nextProps.flightList.Quotes)) {
           nextProps.flightList.Quotes.forEach((quote, index) => {
-            if (moment(quote.OutboundLeg.DepartureDate).format("YYYY-MM-DD") === date || withoutDate === true) {
+            if (moment(quote.OutboundLeg.DepartureDate).format("YYYY-MM-DD") === moment(date._d).format("YYYY-MM-DD") || withoutDate === true) {
               check++
               let fromData = nextProps.flightList.Places && nextProps.flightList.Places.map(places => {
                 if (places.PlaceId === quote.OutboundLeg.OriginId) {
@@ -93,7 +93,7 @@ class HomePage extends React.Component {
                 return quote.OutboundLeg.CarrierIds.map(id => {
                   if (carrier.CarrierId === id)
                     return carrier.Name
-                 return false
+                  return false
                 })
               })
 
@@ -235,236 +235,249 @@ class HomePage extends React.Component {
             });
           })
         }
-      } 
-        else {
-            rootRef.child(user.uid).push({
-            date: selectedFlights[0].date,
-            from: selectedFlights[0].from[0],
-            to: selectedFlights[0].to[0],
-            direct: selectedFlights[0].direct,
-            carriers: carriers,
-            price: selectedFlights[0].price,
-            key: selectedFlights[0].key
-          }).then(res => {
-            Modal.success({
-              content: 'Your Flight Has been Booked Successfully.',
-            });
-          })
-          }
-        }
-        else
-          Modal.error({
-            title: 'Please Select the Flight First',
-          });
       }
+      else {
+        rootRef.child(user.uid).push({
+          date: selectedFlights[0].date,
+          from: selectedFlights[0].from[0],
+          to: selectedFlights[0].to[0],
+          direct: selectedFlights[0].direct,
+          carriers: carriers,
+          price: selectedFlights[0].price,
+          key: selectedFlights[0].key
+        }).then(res => {
+          Modal.success({
+            content: 'Your Flight Has been Booked Successfully.',
+          });
+        })
+      }
+    }
+    else
+      Modal.error({
+        title: 'Please Select the Flight First',
+      });
+  }
 
-      render() {
-        const { places_data, isLoading, flightList, error,internationa_places_data } = this.props
-        const { isLocationChange, rowKey, flightsData, inboundDate, datacheck, origin, destination, country, destinationCountry,  withoutDate, originError, destinationError, destinationName, originName, oneway } = this.state
-        const { Option } = Select;
-        const path = window.location.pathname
+  render() {
+    const { places_data, isLoading, flightList, error, internationa_places_data } = this.props
+    const { isLocationChange, rowKey, date, flightsData, inboundDate, datacheck, origin, destination, country, destinationCountry, withoutDate, originError, destinationError, destinationName, originName, oneway } = this.state
+    const { Option } = Select;
+    const path = window.location.pathname
 
-        return (
-          <Spring
-            from={{ opacity: 0, transform: "translate3d(-50%, 0px, 0px)" }}
-            to={{ opacity: 1, transform: "translate3d(0%, 0px, 0px)" }}>
-            {props => <div className="content" style={props}>
-              {isLoading && <OverLoader />}
-              <div style={{ position: 'absolute', height: places_data ? '55vh' : '30vh', width: '50%', right: 10 }}>
-                <Leaflet height={(path !== '/international' && places_data) ? '55vh' : (path === '/international' && internationa_places_data && places_data) ? '55vh' : '25vh'} />
-              </div>
-              <Row >
-                <Col span={18}  >
-                  <h1> <Trans i18nKey="title" /></h1>
+    return (
+      <Spring
+        from={{ opacity: 0, transform: "translate3d(-50%, 0px, 0px)" }}
+        to={{ opacity: 1, transform: "translate3d(0%, 0px, 0px)" }}>
+        {props => <div className="content" style={props}>
+          {isLoading && <OverLoader />}
+          <div style={{ position: 'absolute', height: places_data ? '55vh' : '30vh', width: '50%', right: 10 }}>
+            <Leaflet height={(path !== '/international' && places_data) ? '55vh' : (path === '/international' && internationa_places_data && places_data) ? '55vh' : '25vh'} />
+          </div>
+          <Row >
+            <Col span={18}  >
+              <h1> <Trans i18nKey="title" /></h1>
+            </Col>
+          </Row>
+          <Form {...formItemLayout}>
+            <Row >
+              {/* span={path === '/international' ? 6 : 12} offset={path !== '/international' && 6} */}
+              <Col span={15} >
+                <Form.Item labelCol={{ span: 24 }} label={<Trans i18nKey="country" />} >
+                  <Select
+                    size="large"
+                    showSearch
+                    // style={{ maxWidth: "250px" }}
+                    placeholder="Select the Country"
+                    optionFilterProp="children"
+                    onChange={this.handleCountrySelect}
+                    filterOption={(input, option) =>
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {Countries && Countries.map((data, index) => <Option key={index} value={data.name}>{data.name}</Option>)}
+
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+            {path === '/international' &&
+              <Row>
+                <Col span={15} >
+                  <Form.Item labelCol={{ span: 24 }} label={<Trans i18nKey="destinationCountry" />} >
+                    <Select
+                      size="large"
+                      showSearch
+                      // style={{ width: "250px" }}
+                      placeholder="Select the Destination Country"
+                      optionFilterProp="children"
+                      onChange={this.handleDestinationCountrySelect}
+                      filterOption={(input, option) =>
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      }
+                    >
+                      {Countries && Countries.map((data, index) => <Option key={index} value={data.name}>{data.name}</Option>)}
+                    </Select>
+                  </Form.Item>
                 </Col>
               </Row>
-              <Form {...formItemLayout}>
-                <Row >
-                  {/* span={path === '/international' ? 6 : 12} offset={path !== '/international' && 6} */}
-                  <Col span={15} >
-                    <Form.Item labelCol={{ span: 24 }} label={<Trans i18nKey="country" />} >
-                      <Select
-                        size="large"
-                        showSearch
-                        // style={{ maxWidth: "250px" }}
-                        placeholder="Select the Country"
-                        optionFilterProp="children"
-                        onChange={this.handleCountrySelect}
-                        filterOption={(input, option) =>
-                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
-                      >
-                        {Countries && Countries.map((data, index) => <Option key={index} value={data.name}>{data.name}</Option>)}
+            }
+            {(path !== '/international' || destinationCountry || country === destinationCountry) &&
+              places_data &&
+              <Row>
+                <Col span={15} >
+                  <Form.Item labelCol={{ span: 24 }} label="Origin"
+                    help={originError && "Please Select Origin"}
+                    validateStatus={originError && "error"}>
+                    <Select
+                      size="large"
+                      showSearch
+                      // style={{ width: "250px" }}
+                      value={origin}
+                      placeholder="Select Origin Place"
+                      optionFilterProp="children"
+                      onChange={this.handleOriginSelect}
+                      onSearch={() => this.setState({ originError: false })}
+                      filterOption={(input, option) =>
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      }
+                    >
+                      {places_data.map((data, index) => <Option key={index} value={data.PlaceId}>{data.PlaceName}</Option>)}
 
-                      </Select>
+                    </Select>
+                  </Form.Item>
+                </Col>
+                <Col span={15} >
+                  <Form.Item labelCol={{ span: 24 }} label="Destination"
+
+                    help={destinationError && "Please Select Destination"}
+                    validateStatus={destinationError && "error"}>
+                    <Select
+                      size="large"
+                      showSearch
+                      // style={{ width: "250px" }}
+                      value={destination}
+                      placeholder="Select Destination Place"
+                      optionFilterProp="children"
+                      onChange={this.handleDestinationSelect}
+                      onSearch={() => this.setState({ destinationError: false })}
+                      filterOption={(input, option) =>
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      }
+                    >
+                      {(path === '/international' && destinationCountry !== country) ? internationa_places_data && internationa_places_data.map((data, index) => <Option key={index} value={data.PlaceId}>{data.PlaceName}</Option>) :
+                        places_data.map((data, index) => <Option key={index} value={data.PlaceId}>{data.PlaceName}</Option>)}
+                    </Select>
+                  </Form.Item>
+                </Col>
+              </Row>
+            }
+            {(path !== '/international' || destinationCountry || country === destinationCountry) &&
+              places_data &&
+              <>
+                <Row>
+                  <Col span={15}>
+                    <Form.Item labelCol={{ span: 24 }} label="Returning ">
+                      <DatePicker size="large"
+                        // style={{ width: "250px" }}
+                        allowClear={false}
+                        format={dateFormat}
+                        disabledDate={this.disabledDate}
+                        value={moment(date, dateFormat)}
+                        onChange={this.handleDateChange} />
                     </Form.Item>
                   </Col>
                 </Row>
-                {path === '/international' &&
-                  <Row>
-                    <Col span={15} >
-                      <Form.Item labelCol={{ span: 24 }} label={<Trans i18nKey="destinationCountry" />} >
-                        <Select
-                          size="large"
-                          showSearch
-                          // style={{ width: "250px" }}
-                          placeholder="Select the Destination Country"
-                          optionFilterProp="children"
-                          onChange={this.handleDestinationCountrySelect}
-                          filterOption={(input, option) =>
-                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                          }
-                        >
-                          {Countries && Countries.map((data, index) => <Option key={index} value={data.name}>{data.name}</Option>)}
-                        </Select>
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                }
-                {(path !== '/international' || destinationCountry || country === destinationCountry) &&
-                  places_data &&
-                  <Row>
-                    <Col span={15} >
-                      <Form.Item labelCol={{ span: 24 }} label="Origin"
-                        help={originError && "Please Select Origin"}
-                        validateStatus={originError && "error"}>
-                        <Select
-                          size="large"
-                          showSearch
-                          // style={{ width: "250px" }}
-                          value={origin}
-                          placeholder="Select Origin Place"
-                          optionFilterProp="children"
-                          onChange={this.handleOriginSelect}
-                          onSearch={() => this.setState({ originError: false })}
-                          filterOption={(input, option) =>
-                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                          }
-                        >
-                          {places_data.map((data, index) => <Option key={index} value={data.PlaceId}>{data.PlaceName}</Option>)}
-
-                        </Select>
-                      </Form.Item>
-                    </Col>
-                    <Col span={15} >
-                      <Form.Item labelCol={{ span: 24 }} label="Destination"
-
-                        help={destinationError && "Please Select Destination"}
-                        validateStatus={destinationError && "error"}>
-                        <Select
-                          size="large"
-                          showSearch
-                          // style={{ width: "250px" }}
-                          value={destination}
-                          placeholder="Select Destination Place"
-                          optionFilterProp="children"
-                          onChange={this.handleDestinationSelect}
-                          onSearch={() => this.setState({ destinationError: false })}
-                          filterOption={(input, option) =>
-                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                          }
-                        >
-                          {(path === '/international' && destinationCountry !== country) ? internationa_places_data && internationa_places_data.map((data, index) => <Option key={index} value={data.PlaceId}>{data.PlaceName}</Option>) :
-                            places_data.map((data, index) => <Option key={index} value={data.PlaceId}>{data.PlaceName}</Option>)}
-                        </Select>
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                }
-                {(path !== '/international' || destinationCountry || country === destinationCountry) &&
-                  places_data &&
-                  <>
-                    <Row >
-                      <Col span={15} >
-                        <Checkbox checked={!oneway} onChange={() => this.setState({ oneway: !oneway })}>One Way</Checkbox>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={15} >
-                        <Transition
-                          native
-                          items={oneway}
-                          from={{ opacity: 0 }}
-                          enter={{ opacity: 1 }}
-                          leave={{ opacity: 0 }}
-                        >
-                          {show => show && (props => (
-                            <div style={props}>
-                              <Form.Item labelCol={{ span: 24 }} label="Returning ">
-                                <DatePicker size="large"
-                                  // style={{ width: "250px" }}
-                                  allowClear={false}
-                                  format={dateFormat}
-                                  disabledDate={this.disabledDate}
-                                  value={moment(inboundDate, dateFormat)}
-                                  onChange={this.handleInboundDateChange} />
-                              </Form.Item>
-                            </div>
-                          ))}
-                        </Transition>
-                      </Col>
-                    </Row>
-                  </>
-                }
-                {(path !== '/international' || destinationCountry || country === destinationCountry) &&
-                  places_data &&
-                  <Row style={{ marginTop: '10px' }}>
-                    <Col span={15} >
-                      <Button onClick={() => this.handleRouteSubmit(false)} type="primary" >Browse Flights</Button>
-                      <Button style={{ marginLeft: "10px" }} type="submit" onClick={() => this.handleRouteSubmit(true)} variant="outlined" color="primary" >Browse Flights Without Date</Button>
-                    </Col>
-                  </Row>
-                }
-              </Form >
-              <br />
-              <br />
-              {
-                flightList &&
-                <Fragment>
-                  <FlightList isLocationChange={isLocationChange} handlSelectedFlights={this.handlSelectedFlights} rowKey={rowKey} flightList={flightsData} datacheck={datacheck} withoutDate={withoutDate} origin={originName} destination={destinationName} />
-                  {!(datacheck === 0 || isEmpty(flightList)) &&
-                    <Button onClick={this.handleBookFlight} type="primary" >Book Flight</Button>
-                  }
-                </Fragment>
-              }
-              <div className="h-50">
-                {
-                  error &&
-                  <small style={{ color: "red" }}> No Flight Found. Try Changing date or Location</small>
-                }
-              </div>
-            </div>
-
+                <Row >
+                  <Col span={15} >
+                    <Checkbox checked={!oneway} onChange={() => this.setState({ oneway: !oneway })}>One Way</Checkbox>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={15} >
+                    <Transition
+                      native
+                      items={oneway}
+                      from={{ opacity: 0 }}
+                      enter={{ opacity: 1 }}
+                      leave={{ opacity: 0 }}
+                    >
+                      {show => show && (props => (
+                        <div style={props}>
+                          <Form.Item labelCol={{ span: 24 }} label="Returning ">
+                            <DatePicker size="large"
+                              // style={{ width: "250px" }}
+                              allowClear={false}
+                              format={dateFormat}
+                              disabledDate={this.disabledDate}
+                              value={moment(inboundDate, dateFormat)}
+                              onChange={this.handleInboundDateChange} />
+                          </Form.Item>
+                        </div>
+                      ))}
+                    </Transition>
+                  </Col>
+                </Row>
+              </>
             }
-          </Spring>
-        )
-      }
-    }
+            {(path !== '/international' || destinationCountry || country === destinationCountry) &&
+              places_data &&
+              <Row style={{ marginTop: '10px' }}>
+                <Col span={15} >
+                  <Button onClick={() => this.handleRouteSubmit(false)} type="primary" >Browse Flights</Button>
+                  <Button style={{ marginLeft: "10px" }} type="submit" onClick={() => this.handleRouteSubmit(true)} variant="outlined" color="primary" >Browse All Flights</Button>
+                </Col>
+              </Row>
+            }
+          </Form >
+          <br />
+          <br />
+          {
+            flightList &&
+            <Fragment>
+              <FlightList isLocationChange={isLocationChange} handlSelectedFlights={this.handlSelectedFlights} rowKey={rowKey} flightList={flightsData} datacheck={datacheck} withoutDate={withoutDate} origin={originName} destination={destinationName} />
+              {!(datacheck === 0 || isEmpty(flightList)) &&
+                <Button onClick={this.handleBookFlight} type="primary" >Book Flight</Button>
+              }
+            </Fragment>
+          }
+          <div className="h-50">
+            {
+              error &&
+              <small style={{ color: "red" }}> No Flight Found. Try Changing date or Location</small>
+            }
+          </div>
+        </div>
 
-    const mapStateToProps = ({ flight, login }) => {
-      return {
-        user: login.user,
-        isLoading: flight.loading,
-        places_data: flight.places_data,
-        internationa_places_data: flight.internationa_places_data,
-        countries: flight.countries,
-        flightList: flight.flight_list,
-        error: flight.error,
-        place_error: flight.place_error,
-        countries_data: flight.countries_data,
-      }
-    }
+        }
+      </Spring>
+    )
+  }
+}
 
-    const mapDispatchToProps = (dispatch) => {
-      return {
-        fetchPlaces: (country, type) => dispatch(fetchPlaces(country, type)),
-        fetchFlights: (data) => dispatch(fetchFlights(data)),
-        fetchCountires: () => dispatch(fetchCountires()),
-        resetState: () => dispatch(resetState()),
-      }
-    }
+const mapStateToProps = ({ flight, login }) => {
+  return {
+    user: login.user,
+    isLoading: flight.loading,
+    places_data: flight.places_data,
+    internationa_places_data: flight.internationa_places_data,
+    countries: flight.countries,
+    flightList: flight.flight_list,
+    error: flight.error,
+    place_error: flight.place_error,
+    countries_data: flight.countries_data,
+  }
+}
 
-    const HomePageComponent = withTranslation()(HomePage)
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchPlaces: (country, type) => dispatch(fetchPlaces(country, type)),
+    fetchFlights: (data) => dispatch(fetchFlights(data)),
+    fetchCountires: () => dispatch(fetchCountires()),
+    resetState: () => dispatch(resetState()),
+  }
+}
+
+const HomePageComponent = withTranslation()(HomePage)
 
 
-    export default connect(mapStateToProps, mapDispatchToProps)(HomePageComponent)
+export default connect(mapStateToProps, mapDispatchToProps)(HomePageComponent)
